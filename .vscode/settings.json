@@ -15,7 +15,9 @@
     "idf.pythonBinPathWin": "C:/Espressif/python_env/idf5.3_py3.11_env/Scripts/python.exe",
     "idf.toolsPathWin": "C:\\Espressif",
     "files.associations": {
-        "task.h": "c"
+        "task.h": "c",
+        "tasks_common.h": "c",
+        "http_server.h": "c"
     },
     "idf.flashType": "UART"
 }

@@ -1,13 +1,13 @@
+#ifndef OBD_H_
+#define OBD_H_
+
 #include <stdio.h>
 #include "driver/twai.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#include "obd/obd.h"
+void obd_init(void);
 
-void app_main()
-{
-    obd_init();
+void obd_task_start(void);
 
-    obd_task_start();
-}
+#endif

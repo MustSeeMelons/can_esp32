@@ -1,0 +1,8 @@
+BasedOnStyle: Microsoft # Or LLVM, Microsoft, WebKit, etc.
+IndentWidth: 4
+AllowShortFunctionsOnASingleLine: false
+AlignConsecutiveMacros: AcrossComments # Aligned defines
+ColumnLimit: 120
+MaxEmptyLinesToKeep: 1
+SeparateDefinitionBlocks: Always
+UseTab: Never

@@ -1,0 +1,12 @@
+#ifndef TASKS_COMMON_H_
+#define TASKS_COMMON_H_
+
+#define OBD_TASK_STACK_SIZE 4096
+#define OBD_TASK_PRIORITY   5
+#define OBD_TASK_CORE_ID    1
+
+#define WIFI_APP_TASK_STACK_SIZE 4096
+#define WIFI_APP_TASK_PRIORITY   4
+#define WIFI_APP_TASK_CORE_ID    0
+
+#endif

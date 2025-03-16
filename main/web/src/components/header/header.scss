@@ -1,0 +1,59 @@
+@use "../../app.scss";
+
+.header {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em;
+  background-color: var(--primary-color);
+  transition: all app.$transition;
+
+  ul {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    list-style: none;
+    height: 70px;
+    width: 100%;
+    max-width: app.$content-width;
+
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    // Logo bit
+    li:first-of-type {
+      &:hover {
+        opacity: unset;
+        background-color: inherit;
+        cursor: default;
+      }
+    }
+
+    li:last-of-type {
+      margin-left: auto;
+    }
+
+    li {
+      display: flex;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-color);
+      transition: all app.$transition;
+      font-weight: 600;
+
+      &:hover {
+        opacity: 0.8;
+        cursor: pointer;
+        background-color: var(--primary-color);
+      }
+    }
+  }
+}

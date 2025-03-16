@@ -1,8 +1,15 @@
 BasedOnStyle: Microsoft # Or LLVM, Microsoft, WebKit, etc.
 IndentWidth: 4
-AllowShortFunctionsOnASingleLine: false
+# AllowShortFunctionsOnASingleLine: false
 AlignConsecutiveMacros: AcrossComments # Aligned defines
 ColumnLimit: 120
 MaxEmptyLinesToKeep: 1
 SeparateDefinitionBlocks: Always
 UseTab: Never
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+AlignAfterOpenBracket: Align
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBraces: Attach
+BreakConstructorInitializers: BeforeColon
+BreakStringLiterals: true

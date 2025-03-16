@@ -1,0 +1,11 @@
+.card {
+  padding: 1.2rem;
+  border-radius: 0.5rem;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+
+  p {
+    color: var(--accent-color);
+    margin-top: 0;
+  }
+}

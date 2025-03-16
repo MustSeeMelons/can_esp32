@@ -1,0 +1,17 @@
+@use "../../app.scss";
+
+.not-found {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: app.$page-padding;
+  height: 100%;
+  color: var(--text-color);
+
+  p {
+    font-weight: 600;
+    margin-left: 0.5rem;
+    font-size: 1.5rem;
+  }
+}

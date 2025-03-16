@@ -5,16 +5,15 @@
 void obd_init(void)
 {
     // Configure TWAI general settings
-    twai_general_config_t general_config = {
-        .mode = TWAI_MODE_NORMAL,
-        .tx_io = GPIO_NUM_21, // TX pin
-        .rx_io = GPIO_NUM_22, // RX pin
-        .clkout_io = TWAI_IO_UNUSED,
-        .bus_off_io = TWAI_IO_UNUSED,
-        .tx_queue_len = 10,
-        .rx_queue_len = 10,
-        .alerts_enabled = TWAI_ALERT_NONE,
-        .clkout_divider = 0};
+    twai_general_config_t general_config = {.mode = TWAI_MODE_NORMAL,
+                                            .tx_io = GPIO_NUM_21, // TX pin
+                                            .rx_io = GPIO_NUM_22, // RX pin
+                                            .clkout_io = TWAI_IO_UNUSED,
+                                            .bus_off_io = TWAI_IO_UNUSED,
+                                            .tx_queue_len = 10,
+                                            .rx_queue_len = 10,
+                                            .alerts_enabled = TWAI_ALERT_NONE,
+                                            .clkout_divider = 0};
 
     // Configure TWAI timing for 500kbps
     twai_timing_config_t timing_config = TWAI_TIMING_CONFIG_500KBITS();
@@ -62,10 +61,6 @@ static void obd_task(void *pvParameter)
             }
             printf("\n");
         }
-        else
-        {
-            printf("No message received within timeout\n");
-        }
 
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
@@ -73,12 +68,5 @@ static void obd_task(void *pvParameter)
 
 void obd_task_start(void)
 {
-    xTaskCreatePinnedToCore(
-        &obd_task,
-        "OBD",
-        OBD_TASK_STACK_SIZE,
-        NULL,
-        OBD_TASK_PRIORITY,
-        NULL,
-        OBD_TASK_CORE_ID);
+    xTaskCreatePinnedToCore(&obd_task, "OBD", OBD_TASK_STACK_SIZE, NULL, OBD_TASK_PRIORITY, NULL, OBD_TASK_CORE_ID);
 }

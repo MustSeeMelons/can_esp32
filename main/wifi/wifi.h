@@ -1,8 +1,10 @@
 #ifndef WIFI_H_
 #define WIFI_H_
 
+#include "esp_mac.h"
 #include "esp_netif.h"
 #include "esp_wifi.h"
+#include "lwip/netdb.h"
 
 #define WIFI_AP_SSID               "ESP32_AP"
 #define WIFI_AP_PASSWORD           "password"
@@ -19,6 +21,6 @@
 #define WIFI_AP_PASSWORD_LENGTH    64 // IEEE standard max
 #define WIFI_AP_CONNECTION_RETRIES 5  // on disconnect
 
-void wifi_app_start(void);
+void wifi_init(void);
 
 #endif

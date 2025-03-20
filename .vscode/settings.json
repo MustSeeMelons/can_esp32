@@ -23,7 +23,9 @@
         "esp_netif.h": "c",
         "cstdint": "c",
         "stdio.h": "c",
-        "twai.h": "c"
+        "twai.h": "c",
+        "system_error": "c",
+        "obd.h": "c"
     },
     "idf.flashType": "UART"
 }

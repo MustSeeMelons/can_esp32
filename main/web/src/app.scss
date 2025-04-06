@@ -1,15 +1,13 @@
-$transition: 0.4s ease-in-out;
-$content-width: 800px;
-$page-padding: 1.2rem;
+@use "variables.scss";
 
 body,
 html {
+  height: 100%;
   padding: 0;
   margin: 0;
-  height: 100%;
   font-size: 14px;
   background-color: var(--background-color);
-  transition: background-color $transition;
+  transition: background-color variables.$transition;
   font-family: "Courier New", Courier, monospace;
 
   a {
@@ -26,32 +24,38 @@ html {
   }
 }
 
-.app {
+#app {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 100dvh;
+  padding: 1em;
+  min-height: 100%;
 
   .content {
+    flex-grow: 1;
     box-sizing: border-box;
-    max-width: $content-width;
+    display: flex;
+    flex-direction: column;
+    max-width: variables.$content-width;
     width: 100%;
-    flex: 1;
     background-color: var(--primary-color);
     border-radius: 8px;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    overflow-y: auto;
+
+    .route-content {
+      display: flex;
+      flex-grow: 1;
+    }
   }
 }
 
 :root,
 [data-theme="light"] {
-  --primary-color: #ffffff;
-  --background-color: #f9fafb;
-  --secondary-color: #f9fafb;
-  --text-color: #111827;
-  --accent-color: #5a89ef;
+  --primary-color: #f9fafb;
+  --background-color: #ffffff;
+  --secondary-color: #e5e7eb;
+  --text-color: #1f2937;
+  --accent-color: #3b82f6;
 }
 
 [data-theme="dark"] {

@@ -14,20 +14,20 @@ export function App() {
       <ThemeProvider>
         <Content>
           <Header />
-          <div class="content">
-            <LocationProvider>
-              <ErrorBoundary
-                onError={() => {
-                  // XXX Navigate to an erorr page + create the error page
-                }}
-              >
+          <LocationProvider>
+            <ErrorBoundary
+              onError={() => {
+                // XXX Navigate to an erorr page + create the error page
+              }}
+            >
+              <div class="route-content">
                 <Router>
                   <Route path="/monitor" component={MonitorPage} />
                   <Route component={NotFound} default />
                 </Router>
-              </ErrorBoundary>
-            </LocationProvider>
-          </div>
+              </div>
+            </ErrorBoundary>
+          </LocationProvider>
           <Footer />
         </Content>
       </ThemeProvider>

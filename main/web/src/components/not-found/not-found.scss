@@ -1,12 +1,12 @@
-@use "../../app.scss";
+@use "../../variables.scss";
 
 .not-found {
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: app.$page-padding;
-  height: 100%;
+  padding: variables.$page-padding;
+  flex-grow: 1;
   color: var(--text-color);
 
   p {

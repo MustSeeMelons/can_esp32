@@ -1,8 +1,21 @@
-@use "../../app.scss";
+@use "../../variables.scss";
 
 .monitor-page {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-  padding: app.$page-padding;
+  padding: variables.$page-padding;
+  width: 100%;
+
+  .card {
+    h3 {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    span {
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+  }
 }

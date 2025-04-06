@@ -137,9 +137,8 @@ static esp_err_t ws_open_handler(httpd_req_t *req) {
     return ESP_OK;
 }
 
-static esp_err_t ws_close_handler(httpd_handle_t hd, int sockfd) {
+static void ws_close_handler(httpd_handle_t hd, int sockfd) {
     remove_client(hd, sockfd);
-    return ESP_OK;
 }
 
 static httpd_handle_t http_server_configure(void) {
@@ -218,7 +217,7 @@ void ws_broadcast_message(void *data, uint8_t len) {
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
     ws_pkt.payload = (uint8_t *)data;
     ws_pkt.len = len;
-    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
+    ws_pkt.type = HTTPD_WS_TYPE_BINARY;
 
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (clients[i].is_active) {

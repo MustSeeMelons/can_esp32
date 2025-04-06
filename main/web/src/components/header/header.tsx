@@ -1,7 +1,7 @@
 import { useContext } from "preact/hooks";
 import "./header.scss";
 import { Moon, Sun, KeySquare } from "lucide-preact";
-import { Theme, ThemeContext } from "../theme-provider/theme.provider";
+import { Theme, ThemeContext } from "../../theme-provider/theme.provider";
 
 export const Header = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);

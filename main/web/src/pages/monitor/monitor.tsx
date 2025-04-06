@@ -1,17 +1,18 @@
-import { useState } from "preact/hooks";
+import { useContext } from "preact/hooks";
 import { Card } from "../../components/card/card";
 import "./monitor.scss";
+import { StoreContext } from "../../store-provider/store-provider";
 
 export const MonitorPage = () => {
-  const [items] = useState(Array(20).fill(1));
+  const { canMessages } = useContext(StoreContext);
 
   return (
     <div class="monitor-page">
-      {items.map((i) => {
+      {Object.keys(canMessages).map((typeKey) => {
         return (
           <Card>
-            <p>code {i}</p>
-            the description
+            <p>{typeKey}</p>
+            {JSON.stringify(canMessages[+typeKey], null, 2)}
           </Card>
         );
       })}

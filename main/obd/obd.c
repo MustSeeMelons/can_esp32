@@ -2,6 +2,8 @@
 #include "../http/http_server.h"
 #include "../tasks_common.h"
 
+static const uint8_t ws_size = 4 + 1 + 8;
+
 void obd_init(void) {
     // Configure TWAI general settings
     twai_general_config_t general_config = {.mode = TWAI_MODE_NORMAL,
@@ -43,17 +45,29 @@ static void obd_task(void *pvParameter) {
     for (;;) {
         twai_message_t message;
         if (twai_receive(&message, pdMS_TO_TICKS(1000)) == ESP_OK) {
-            // TODO send this message via websockets? or have a stash? or both!?
+            // Log the message for debugging
             printf("Message received: ID=0x%X, Data=", (unsigned int)message.identifier);
+
             for (int i = 0; i < message.data_length_code; i++) {
                 printf("0x%02X ", message.data[i]);
             }
             printf("\n");
+
+            // Broadcast to clients
+            uint8_t ws_msg[ws_size];
+            ws_msg[0] = (uint8_t)(message.identifier & 0xFF);
+            ws_msg[1] = (uint8_t)((message.identifier >> 8) & 0xFF);
+            ws_msg[2] = (uint8_t)((message.identifier >> 16) & 0xFF);
+            ws_msg[3] = (uint8_t)((message.identifier >> 24) & 0xFF);
+
+            ws_msg[4] = message.data_length_code;
+
+            for (uint8_t i = 0; i < TWAI_FRAME_MAX_DLC; i++) {
+                ws_msg[5 + i] = (i < message.data_length_code) ? message.data[i] : 0;
+            }
+
+            ws_broadcast_message((void *)ws_msg, ws_size);
         }
-
-        const char *msg = "howdy";
-
-        ws_broadcast_message((void *)msg, strlen(msg));
 
         vTaskDelay(pdMS_TO_TICKS(1000));
     }

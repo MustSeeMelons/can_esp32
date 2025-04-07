@@ -6,6 +6,8 @@ import {
   // StoreContext,
 } from "../../store-provider/store-provider";
 import { mapIdentifierToName } from "../../definitions";
+import { Button } from "../../components/button/button";
+import { saveAsJson } from "../../utils";
 
 const canMessages: CanMessageTree = (() => {
   return new Array(15)
@@ -36,6 +38,28 @@ export const MonitorPage = () => {
 
   return (
     <div class="monitor-page">
+      <Button
+        onClick={() => {
+          const obj = Object.keys(canMessages).map((identifierKey) => {
+            const message = canMessages[Number(identifierKey)];
+
+            return {
+              id: `0x${new Number(identifierKey).toString(16)}`,
+              name: mapIdentifierToName(Number(identifierKey)),
+              dlc: message[0].dataLengthCode,
+              data: message.map((msg) => {
+                return msg.data
+                  .map((d) => `0x${d.toString(16).toUpperCase()}`)
+                  .join(", ");
+              }),
+            };
+          });
+
+          saveAsJson(obj);
+        }}
+      >
+        Save JSON
+      </Button>
       {Object.keys(canMessages).map((identifierKey) => {
         return (
           <Card>

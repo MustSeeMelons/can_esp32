@@ -1,0 +1,17 @@
+.expandable-card {
+  position: relative;
+
+  * {
+    transition: transform 0.25s ease-in-out;
+  }
+
+  #exp-arrow {
+    padding: 0.5em;
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    right: 0;
+    pointer-events: none;
+    backdrop-filter: unset;
+  }
+}

@@ -8,14 +8,29 @@
   width: 100%;
 
   .card {
+    padding: 0;
+
     h3 {
       font-weight: 600;
       font-size: 1.2rem;
+      margin-bottom: 0;
+      padding: 0.5em;
+      cursor: pointer;
     }
 
     span {
       display: block;
-      margin-bottom: 0.2rem;
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.5em;
+      padding: 0.5em;
+
+      &:nth-child(even) {
+        backdrop-filter: brightness(90%);
+      }
     }
   }
 

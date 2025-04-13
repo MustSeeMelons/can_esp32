@@ -1,5 +1,4 @@
 // import { useContext } from "preact/hooks";
-import { Card } from "../../components/card/card";
 import "./monitor.scss";
 import {
   CanMessageTree,
@@ -8,6 +7,9 @@ import {
 import { mapIdentifierToName } from "../../definitions";
 import { Button } from "../../components/button/button";
 import { saveAsJson } from "../../utils";
+import { formatTime } from "../../utils/date-utils";
+import { useEffect, useState } from "preact/hooks";
+import { ExpandableCard } from "../../components/expandable-card/expandable-card";
 
 const canMessages: CanMessageTree = (() => {
   return new Array(15)
@@ -18,11 +20,19 @@ const canMessages: CanMessageTree = (() => {
 
       acc[id] = [
         {
+          timestamp: new Date(),
           data: [255, 255, 255, 255, 255, 255, 255, 255],
           dataLengthCode: 8,
           identifier: id,
         },
         {
+          timestamp: new Date(),
+          data: [255, 255, 255, 255, 255, 255, 255, 255],
+          dataLengthCode: 8,
+          identifier: id,
+        },
+        {
+          timestamp: new Date(),
           data: [255, 255, 255, 255, 255, 255, 255, 255],
           dataLengthCode: 8,
           identifier: id,
@@ -34,7 +44,20 @@ const canMessages: CanMessageTree = (() => {
 })();
 
 export const MonitorPage = () => {
+  const [isExpanded, setExpanded] = useState<boolean[]>([]);
   // const { canMessages } = useContext(StoreContext);
+
+  useEffect(() => {
+    const currCount = Object.keys(canMessages).length;
+
+    if (isExpanded.length === 0) {
+      setExpanded(new Array(currCount).fill(false));
+    } else {
+      const diff = currCount - isExpanded.length;
+
+      setExpanded([...isExpanded, ...new Array(diff).fill(false)]);
+    }
+  }, [canMessages]);
 
   return (
     <div class="monitor-page">
@@ -48,9 +71,12 @@ export const MonitorPage = () => {
               name: mapIdentifierToName(Number(identifierKey)),
               dlc: message[0].dataLengthCode,
               data: message.map((msg) => {
-                return msg.data
-                  .map((d) => `0x${d.toString(16).toUpperCase()}`)
-                  .join(", ");
+                return {
+                  data: msg.data
+                    .map((d) => `0x${d.toString(16).toUpperCase()}`)
+                    .join(", "),
+                  timestamp: formatTime(msg.timestamp),
+                };
               }),
             };
           });
@@ -60,24 +86,35 @@ export const MonitorPage = () => {
       >
         Save JSON
       </Button>
-      {Object.keys(canMessages).map((identifierKey) => {
+      {Object.keys(canMessages).map((identifierKey, index) => {
         return (
-          <Card>
-            <h3>
+          <ExpandableCard isExpanded={isExpanded[index]}>
+            <h3
+              onClick={() => {
+                setExpanded(
+                  isExpanded.map((exp, idx) => (idx === index ? !exp : exp))
+                );
+              }}
+            >
               ID: 0x{new Number(identifierKey).toString(16)} [
               {mapIdentifierToName(Number(identifierKey))}]
             </h3>
-            {canMessages[Number(identifierKey)].map((msg) => {
-              return (
-                <span>
-                  {msg.data
-                    .map((d) => `0x${d.toString(16).toUpperCase()}`)
-                    .join(" ")}
-                </span>
-                // TODO add decoded message on we know what it is
-              );
-            })}
-          </Card>
+            {isExpanded[index] &&
+              canMessages[Number(identifierKey)].map((msg) => {
+                return (
+                  <div>
+                    <span>[{formatTime(msg.timestamp)}]</span>
+                    <span>
+                      {msg.data
+                        .map((d) => `0x${d.toString(16).toUpperCase()}`)
+                        .join(" ")}
+                    </span>
+                    {/* TODO add decoded message on we know what it is */}
+                    {/* <div>99mph</div> */}
+                  </div>
+                );
+              })}
+          </ExpandableCard>
         );
       })}
     </div>

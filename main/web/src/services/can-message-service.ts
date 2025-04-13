@@ -6,6 +6,7 @@ export interface ICanMessage {
   identifier: number;
   dataLengthCode: number;
   data: number[];
+  timestamp: Date;
 }
 
 export const canMessageService: ICanMessageService = {
@@ -15,6 +16,7 @@ export const canMessageService: ICanMessageService = {
     const dlc = buff[4];
 
     const canMsg: ICanMessage = {
+      timestamp: new Date(),
       identifier: buff[0] | (buff[1] << 8) | (buff[2] << 16) | (buff[3] << 24),
       dataLengthCode: dlc,
       data: (() => {

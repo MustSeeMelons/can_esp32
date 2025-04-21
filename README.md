@@ -20,6 +20,10 @@ WHITE:    CAN-L
 - Must enable WS in SDK
 - Must increase HTTP URI Length in SDK
 
+## TJA1050
+
+TX & RX should be swapped when connecting - RX goes to TX, RX to TX as usual.
+
 ## SD Card
 
 Files present on the SD card at `/`

@@ -11,4 +11,6 @@ void obd_init(void);
 
 void obd_task_start(void);
 
+void obd_can_send(uint8_t msg_id);
+
 #endif

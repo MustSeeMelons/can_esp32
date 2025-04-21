@@ -2,50 +2,51 @@
 import "./monitor.scss";
 import {
   CanMessageTree,
+  StoreContext,
   // StoreContext,
 } from "../../store-provider/store-provider";
 import { mapIdentifierToName } from "../../definitions";
 import { Button } from "../../components/button/button";
 import { saveAsJson } from "../../utils";
 import { formatTime } from "../../utils/date-utils";
-import { useEffect, useState } from "preact/hooks";
+import { useContext, useEffect, useState } from "preact/hooks";
 import { ExpandableCard } from "../../components/expandable-card/expandable-card";
 
-const canMessages: CanMessageTree = (() => {
-  return new Array(15)
-    .fill(0)
-    .map((_, i) => i)
-    .reduce<CanMessageTree>((acc, curr) => {
-      const id = curr + 1 * 100;
+// const canMessages: CanMessageTree = (() => {
+//   return new Array(15)
+//     .fill(0)
+//     .map((_, i) => i)
+//     .reduce<CanMessageTree>((acc, curr) => {
+//       const id = curr + 1 * 100;
 
-      acc[id] = [
-        {
-          timestamp: new Date(),
-          data: [255, 255, 255, 255, 255, 255, 255, 255],
-          dataLengthCode: 8,
-          identifier: id,
-        },
-        {
-          timestamp: new Date(),
-          data: [255, 255, 255, 255, 255, 255, 255, 255],
-          dataLengthCode: 8,
-          identifier: id,
-        },
-        {
-          timestamp: new Date(),
-          data: [255, 255, 255, 255, 255, 255, 255, 255],
-          dataLengthCode: 8,
-          identifier: id,
-        },
-      ];
+//       acc[id] = [
+//         {
+//           timestamp: new Date(),
+//           data: [255, 255, 255, 255, 255, 255, 255, 255],
+//           dataLengthCode: 8,
+//           identifier: id,
+//         },
+//         {
+//           timestamp: new Date(),
+//           data: [255, 255, 255, 255, 255, 255, 255, 255],
+//           dataLengthCode: 8,
+//           identifier: id,
+//         },
+//         {
+//           timestamp: new Date(),
+//           data: [255, 255, 255, 255, 255, 255, 255, 255],
+//           dataLengthCode: 8,
+//           identifier: id,
+//         },
+//       ];
 
-      return acc;
-    }, {});
-})();
+//       return acc;
+//     }, {});
+// })();
 
 export const MonitorPage = () => {
   const [isExpanded, setExpanded] = useState<boolean[]>([]);
-  // const { canMessages } = useContext(StoreContext);
+  const { canMessages } = useContext(StoreContext);
 
   useEffect(() => {
     const currCount = Object.keys(canMessages).length;

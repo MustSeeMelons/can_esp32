@@ -121,7 +121,7 @@ static esp_err_t ws_open_handler(httpd_req_t *req) {
         ((uint8_t *)ws_pkt.payload)[ws_pkt.len] = 0;
         ESP_LOGI(TAG, "Received packet with message: %s", ws_pkt.payload);
 
-        // XXX do something with the message
+        // TODO do something with the message, most likely send it to OBD task
 
         // Send a response (echo back the received message)
         ret = httpd_ws_send_frame(req, &ws_pkt);
@@ -161,15 +161,6 @@ static httpd_handle_t http_server_configure(void) {
         ESP_LOGI(TAG, "http_server_configure: Registering URI handlers");
 
         // clang-format off
-        httpd_uri_t index_html = {
-            .uri = "/",
-            .method = HTTP_GET,
-            .handler = httpd_server_index_html_handler,
-            .user_ctx = NULL
-        };
-        
-        httpd_register_uri_handler(http_server_handle, &index_html);
-
         httpd_uri_t index_css = {
             .uri = "/index.css", 
             .method = HTTP_GET,
@@ -187,6 +178,32 @@ static httpd_handle_t http_server_configure(void) {
         };
 
         httpd_register_uri_handler(http_server_handle, &index_js);
+
+        // No wildcards, must match all paths manually
+        httpd_uri_t index_html = {
+            .uri = "/",
+            .method = HTTP_GET,
+            .handler = httpd_server_index_html_handler,
+            .user_ctx = NULL
+        };
+
+        httpd_uri_t monitor_html = {
+            .uri = "/monitor",
+            .method = HTTP_GET,
+            .handler = httpd_server_index_html_handler,
+            .user_ctx = NULL
+        };
+
+        httpd_uri_t tbd_html = {
+            .uri = "/tbd",
+            .method = HTTP_GET,
+            .handler = httpd_server_index_html_handler,
+            .user_ctx = NULL
+        };
+        
+        httpd_register_uri_handler(http_server_handle, &index_html);
+        httpd_register_uri_handler(http_server_handle, &monitor_html);
+        httpd_register_uri_handler(http_server_handle, &tbd_html);
 
         httpd_uri_t ws = {
             .uri       = "/ws",

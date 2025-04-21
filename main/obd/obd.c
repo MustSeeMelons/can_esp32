@@ -4,11 +4,13 @@
 
 static const uint8_t ws_size = 4 + 1 + 8;
 
+static QueueHandle_t obd_queue_handle;
+
 void obd_init(void) {
     // Configure TWAI general settings
     twai_general_config_t general_config = {.mode = TWAI_MODE_NORMAL,
-                                            .tx_io = GPIO_NUM_21, // TX pin
-                                            .rx_io = GPIO_NUM_22, // RX pin
+                                            .tx_io = GPIO_NUM_32,
+                                            .rx_io = GPIO_NUM_33,
                                             .clkout_io = TWAI_IO_UNUSED,
                                             .bus_off_io = TWAI_IO_UNUSED,
                                             .tx_queue_len = 10,
@@ -39,7 +41,7 @@ void obd_init(void) {
     }
 }
 
-static void obd_task(void *pvParameter) {
+static void obd_read_task(void *pvParameter) {
     printf("Starting OBD task\n\n");
 
     for (;;) {
@@ -73,6 +75,20 @@ static void obd_task(void *pvParameter) {
     }
 }
 
+void obd_can_send(uint8_t msg_id) {
+    xQueueSend(obd_queue_handle, &msg_id, portMAX_DELAY);
+}
+
+static void obd_send_task(void *pvParameter) {
+    uint8_t msg_id;
+    for (;;) {
+        if (xQueueReceive(obd_queue_handle, &msg_id, portMAX_DELAY)) {
+            // TODO do things
+        }
+    }
+}
+
 void obd_task_start(void) {
-    xTaskCreatePinnedToCore(&obd_task, "OBD", OBD_TASK_STACK_SIZE, NULL, OBD_TASK_PRIORITY, NULL, OBD_TASK_CORE_ID);
+    xTaskCreatePinnedToCore(
+        &obd_read_task, "OBD", OBD_TASK_STACK_SIZE, NULL, OBD_TASK_PRIORITY, NULL, OBD_TASK_CORE_ID);
 }

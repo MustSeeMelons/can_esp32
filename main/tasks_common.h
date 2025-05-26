@@ -9,4 +9,12 @@
 #define HTTP_SERVER_TASK_PRIORITY   4
 #define HTTP_SERVER_TASK_CORE_ID    0
 
+#define SD_TASK_STACK_SIZE 4096
+#define SD_TASK_PRIORITY   3
+#define SD_TASK_CODE_ID    1
+
+#define I2S_TASK_STACK_SIZE 4096
+#define I2S_TASK_PRIORITY   3
+#define I2S_TASK_CODE_ID    1
+
 #endif

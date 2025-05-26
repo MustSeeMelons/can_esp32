@@ -1,6 +1,10 @@
 #ifndef OBD_H_
 #define OBD_H_
 
+// TX => RX, RX => TX of TJA
+#define TX_PIN GPIO_NUM_32
+#define RX_PIN GPIO_NUM_33
+
 #include "driver/twai.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"

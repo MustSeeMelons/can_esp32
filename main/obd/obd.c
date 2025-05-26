@@ -2,6 +2,8 @@
 #include "../http/http_server.h"
 #include "../tasks_common.h"
 
+static const char *TAG = "OBD";
+
 static const uint8_t ws_size = 4 + 1 + 8;
 
 static QueueHandle_t obd_queue_handle;
@@ -9,8 +11,8 @@ static QueueHandle_t obd_queue_handle;
 void obd_init(void) {
     // Configure TWAI general settings
     twai_general_config_t general_config = {.mode = TWAI_MODE_NORMAL,
-                                            .tx_io = GPIO_NUM_32,
-                                            .rx_io = GPIO_NUM_33,
+                                            .tx_io = TX_PIN,
+                                            .rx_io = RX_PIN,
                                             .clkout_io = TWAI_IO_UNUSED,
                                             .bus_off_io = TWAI_IO_UNUSED,
                                             .tx_queue_len = 10,
@@ -26,9 +28,9 @@ void obd_init(void) {
 
     // Install the TWAI driver
     if (twai_driver_install(&general_config, &timing_config, &filter_config) == ESP_OK) {
-        printf("TWAI driver installed\n");
+        ESP_LOGI(TAG, "TWAI driver installed");
     } else {
-        printf("Failed to install TWAI driver\n");
+        ESP_LOGI(TAG, "Failed to install TWAI driver");
         return;
     }
 
@@ -42,8 +44,7 @@ void obd_init(void) {
 }
 
 static void obd_read_task(void *pvParameter) {
-    printf("Starting OBD task\n\n");
-
+    ESP_LOGI(TAG, "Starting OBD task");
     for (;;) {
         twai_message_t message;
         if (twai_receive(&message, pdMS_TO_TICKS(1000)) == ESP_OK) {

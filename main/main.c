@@ -5,18 +5,26 @@
 #include <stdio.h>
 
 #include "http/http_server.h"
+#include "i2s/i2s.h"
 #include "mdns_service/mdns_service.h"
 #include "obd/obd.h"
+#include "sd/sd.h"
 #include "wifi/wifi.h"
 
 void app_main() {
-    obd_init();
+    sd_init();
 
-    obd_task_start();
+    i2s_init();
 
-    wifi_init();
+    i2s_test();
 
-    http_server_init();
+    // obd_init();
 
-    mnds_init();
+    // obd_task_start();
+
+    // wifi_init();
+
+    // http_server_init();
+
+    // mnds_init();
 }

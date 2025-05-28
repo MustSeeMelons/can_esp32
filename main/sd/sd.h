@@ -21,6 +21,7 @@ typedef enum sd_message {
 
 typedef struct sd_queue_message {
     sd_message_e msg_id;
+    // TODO add filename, make a resyclbale message
 } sd_message_t;
 
 esp_err_t sd_init();

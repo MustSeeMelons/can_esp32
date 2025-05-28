@@ -16,8 +16,6 @@ void app_main() {
 
     i2s_init();
 
-    i2s_test();
-
     // obd_init();
 
     // obd_task_start();

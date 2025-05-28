@@ -2,6 +2,8 @@
 #define I2S_H_
 
 #include "driver/i2s_std.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #define I2S_NUM I2S_NUM_0
 
@@ -13,7 +15,5 @@
 // XXX write to i2s
 
 void i2s_init();
-
-void i2s_test();
 
 #endif

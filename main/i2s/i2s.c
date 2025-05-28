@@ -1,9 +1,8 @@
 #include "i2s.h"
-#include "sdmmc_cmd.h"
 
-i2s_chan_handle_t tx_handle;
+static QueueHandle_t audio_queue_handle;
 
-extern sdmmc_card_t *card;
+static i2s_chan_handle_t tx_handle;
 
 void i2s_init() {
     // clang-format off
@@ -34,6 +33,18 @@ void i2s_init() {
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(tx_handle, &std_cfg));
     ESP_ERROR_CHECK(i2s_channel_enable(tx_handle));
 }
+
+// TODO check audio queue and send to i2s if any
+static void sd_task(void *parameter) {
+    // sd_message_t msg;
+
+    for (;;) {
+        // if (xQueueReceive(sd_command_queue_handle, &msg, portMAX_DELAY)) {
+
+        // }
+    }
+}
+
 
 void i2s_test() {
     FILE* f = fopen("/sd/oxp.wav", "rb");

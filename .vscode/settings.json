@@ -28,7 +28,9 @@
         "obd.h": "c",
         "freertos.h": "c",
         "esp_vfs_fat.h": "c",
-        "sd.h": "c"
+        "sd.h": "c",
+        "esp_spiffs.h": "c",
+        "esp_err.h": "c"
     },
     "idf.flashType": "UART"
 }

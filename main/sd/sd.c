@@ -4,9 +4,8 @@ static const char *TAG = "SD";
 
 static uint8_t max_mount_retries = 3;
 
-static QueueHandle_t sd_queue_handle;
-
-sdmmc_card_t *card;
+// For recieving files to read
+static QueueHandle_t sd_command_queue_handle;
 
 static esp_err_t sd_mount_fs() {
     esp_err_t ret;
@@ -18,8 +17,7 @@ static esp_err_t sd_mount_fs() {
     };
     // clang-format on
 
-    // TODO makingthis global just for testing
-    // sdmmc_card_t *card;
+    sdmmc_card_t *card;
     const char mount_point[] = MOUNT_POINT;
     ESP_LOGI(TAG, "Initializing SD card");
 
@@ -62,7 +60,14 @@ static esp_err_t sd_mount_fs() {
 }
 
 static void sd_task(void *parameter) {
+    sd_message_t msg;
+
     for (;;) {
+        if (xQueueReceive(sd_command_queue_handle, &msg, portMAX_DELAY)) {
+            // TODO get filename
+            // TODO read buffer
+            // TODO yield for a bit
+        }
     }
 }
 
@@ -70,24 +75,24 @@ esp_err_t sd_init() {
     esp_err_t ret = -1;
     uint8_t retries = 0;
 
-    // while (ret != ESP_OK || retries >= max_mount_retries) {
-    ret = sd_mount_fs();
-    retries++;
-    // }
+    while (ret != ESP_OK || retries >= max_mount_retries) {
+        ret = sd_mount_fs();
+        retries++;
+    }
 
     // clang-format off
-    // xTaskCreatePinnedToCore(
-    //     &sd_queue_handle,
-    //     "sd_queue_handle",
-    //     SD_TASK_STACK_SIZE,
-    //     NULL,
-    //     SD_TASK_PRIORITY,
-    //     &sd_task,
-    //     SD_TASK_CODE_ID
-    // );
+    xTaskCreatePinnedToCore(
+        &sd_command_queue_handle,
+        "sd_queue_handle",
+        SD_TASK_STACK_SIZE,
+        NULL,
+        SD_TASK_PRIORITY,
+        &sd_task,
+        SD_TASK_CODE_ID
+    );
     // clang-format on
 
-    // sd_queue_handle = xQueueCreate(3, sizeof(sd_message_t));
+    sd_command_queue_handle = xQueueCreate(3, sizeof(sd_message_t));
 
     return ret;
 }
@@ -97,7 +102,7 @@ BaseType_t sd_send_message(sd_message_e msg_id) {
     sd_message_t msg;
     msg.msg_id = msg_id;
 
-    return xQueueSend(sd_queue_handle, &msg, portMAX_DELAY);
+    return xQueueSend(sd_command_queue_handle, &msg, portMAX_DELAY);
 }
 
 // XXX task that reads file

@@ -4,8 +4,12 @@ static const char *TAG = "SD";
 
 static uint8_t max_mount_retries = 3;
 
+static uint8_t buffer_index = 0;
+static uint8_t buffers[BUFFER_COUNT][BUFFER_SIZE];
+
 // For recieving files to read
-static QueueHandle_t sd_command_queue_handle;
+static QueueHandle_t sd_command_queue_handle = NULL;
+static TaskHandle_t sd_task_handle = NULL;
 
 static esp_err_t sd_mount_fs() {
     esp_err_t ret;
@@ -54,19 +58,66 @@ static esp_err_t sd_mount_fs() {
         ESP_LOGI(TAG, "FS mounted");
     }
 
-    sdmmc_card_print_info(stdout, card);
+    // sdmmc_card_print_info(stdout, card);
 
     return ESP_OK;
 }
 
-static void sd_task(void *parameter) {
+static void sd_task(void *pvParameter) {
     sd_message_t msg;
 
     for (;;) {
         if (xQueueReceive(sd_command_queue_handle, &msg, portMAX_DELAY)) {
-            // TODO get filename
-            // TODO read buffer
-            // TODO yield for a bit
+            switch (msg.msg_id) {
+            case SD_READ_FILE:
+                char full_path[MAX_PATH];
+                snprintf(full_path, sizeof(full_path), "%s/%s", MOUNT_POINT, msg.filename);
+
+                FILE *f = fopen(full_path, "rb");
+
+                if (!f) {
+                    ESP_LOGI(TAG, "Failed to open file! %s", full_path);
+                    break;
+                }
+
+                ESP_LOGI(TAG, "Playing: %s", full_path);
+
+                // TODO read header and re-configure i2s
+                fseek(f, 0, SEEK_SET);
+                uint8_t header[44];
+                fread(header, 1, 44, f);
+
+                while (true) {
+                    uint8_t *buf = buffers[buffer_index];
+
+                    size_t bytes_read = fread(buf, 1, BUFFER_SIZE, f);
+
+                    i2s_audio_message_t msg;
+                    msg.msg_id = AUDIO_CHUNK;
+                    msg.bytes = buf;
+                    msg.len = bytes_read;
+
+                    if (bytes_read == 0) {
+                        msg.bytes = NULL;
+                    }
+
+                    i2s_send_message(msg);
+
+                    if (bytes_read == 0) {
+                        break;
+                    }
+
+                    buffer_index = (buffer_index + 1) % BUFFER_COUNT;
+
+                    vTaskDelay(1);
+                }
+
+                fclose(f);
+
+                break;
+            default:
+                break;
+            }
         }
     }
 }
@@ -80,56 +131,27 @@ esp_err_t sd_init() {
         retries++;
     }
 
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    sd_command_queue_handle = xQueueCreate(3, sizeof(sd_message_t));
+
     // clang-format off
     xTaskCreatePinnedToCore(
-        &sd_command_queue_handle,
-        "sd_queue_handle",
+        &sd_task,
+        "sd_task",
         SD_TASK_STACK_SIZE,
         NULL,
         SD_TASK_PRIORITY,
-        &sd_task,
+        &sd_task_handle,
         SD_TASK_CODE_ID
     );
     // clang-format on
 
-    sd_command_queue_handle = xQueueCreate(3, sizeof(sd_message_t));
-
     return ret;
 }
 
-// XXX we can just pass in the enum value, no need to the wrapper
-BaseType_t sd_send_message(sd_message_e msg_id) {
-    sd_message_t msg;
-    msg.msg_id = msg_id;
-
+BaseType_t sd_send_message(sd_message_t msg) {
     return xQueueSend(sd_command_queue_handle, &msg, portMAX_DELAY);
 }
-
-// XXX task that reads file
-// XXX same task - checks for file to read, taking from queue
-// XXX place read data into a queue
-
-// esp_err_t sd_read_test() {
-//     const char *file_path = MOUNT_POINT "/dat_text.txt";
-
-//     ESP_LOGI(TAG, "Reading file %s", file_path);
-//     FILE *f = fopen(file_path, "r");
-//     if (f == NULL) {
-//         ESP_LOGE(TAG, "Failed to open file for reading");
-//         return ESP_FAIL;
-//     }
-
-//     char line[256];
-//     fgets(line, sizeof(line), f);
-//     fclose(f);
-
-//     // strip newline
-//     char *pos = strchr(line, '\n');
-//     if (pos) {
-//         *pos = '\0';
-//     }
-
-//     ESP_LOGI(TAG, "Read from file: '%s'", line);
-
-//     return ESP_OK;
-// }

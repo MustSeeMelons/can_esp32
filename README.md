@@ -36,6 +36,10 @@ Files present on the SD card at `/`
 - xp/winxp.mp3
 - xp/winxpshutdown.mp3
 
+## VSC
+
+Instal LLVM and use theclang-format extension for formatting. [link](https://github.com/llvm/llvm-project/releases/tag/llvmorg-20.1.0)
+
 ## IDF 
 
 ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt`

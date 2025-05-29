@@ -30,7 +30,9 @@
         "esp_vfs_fat.h": "c",
         "sd.h": "c",
         "esp_spiffs.h": "c",
-        "esp_err.h": "c"
+        "esp_err.h": "c",
+        "stdint.h": "c",
+        "sdmmc_cmd.h": "c"
     },
     "idf.flashType": "UART"
 }

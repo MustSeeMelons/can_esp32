@@ -1,8 +1,34 @@
 #include "i2s.h"
 
+static const char *TAG = "I2S";
+
 static QueueHandle_t audio_queue_handle;
+static TaskHandle_t audio_task_handle = NULL;
 
 static i2s_chan_handle_t tx_handle;
+
+static void audio_task(void *parameter) {
+    i2s_audio_message_t msg;
+
+    for (;;) {
+        if (xQueueReceive(audio_queue_handle, &msg, portMAX_DELAY)) {
+            switch (msg.msg_id) {
+            case AUDIO_CHUNK:
+                if (msg.bytes != NULL) {
+                    size_t bytes_written;
+                    i2s_channel_write(tx_handle, msg.bytes, msg.len, &bytes_written, portMAX_DELAY);
+                } else {
+                    ESP_LOGI(TAG, "Finished playback");
+                }
+                break;
+            default:
+                break;
+            }
+        }
+
+        vTaskDelay(1);
+    }
+}
 
 void i2s_init() {
     // clang-format off
@@ -15,8 +41,6 @@ void i2s_init() {
             .data_bit_width = I2S_DATA_BIT_WIDTH_16BIT,
             .slot_bit_width = I2S_SLOT_BIT_WIDTH_16BIT,
             .slot_mode = I2S_SLOT_MODE_STEREO,
-            .slot_mask = I2S_STD_SLOT_LEFT | I2S_STD_SLOT_RIGHT,
-            .ws_width = I2S_SLOT_BIT_WIDTH_16BIT,
             .ws_pol = false,
             .bit_shift = true,
             .msb_right = false,
@@ -32,38 +56,29 @@ void i2s_init() {
 
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(tx_handle, &std_cfg));
     ESP_ERROR_CHECK(i2s_channel_enable(tx_handle));
+
+    audio_queue_handle = xQueueCreate(BUFFER_COUNT, sizeof(i2s_audio_message_t));
+
+    xTaskCreatePinnedToCore(
+        &audio_task,
+        "audio_task",
+        I2S_TASK_STACK_SIZE,
+        NULL,
+        I2S_TASK_PRIORITY,
+        &audio_task_handle,
+        I2S_TASK_CODE_ID
+    );
+    // clang-format on
+
+    ESP_LOGI(TAG, "Initialized");
 }
 
-// TODO check audio queue and send to i2s if any
-static void sd_task(void *parameter) {
-    // sd_message_t msg;
-
-    for (;;) {
-        // if (xQueueReceive(sd_command_queue_handle, &msg, portMAX_DELAY)) {
-
-        // }
-    }
+BaseType_t i2s_send_message(i2s_audio_message_t msg) {
+    return xQueueSend(audio_queue_handle, &msg, portMAX_DELAY);
 }
 
+void i2s_play_wav(const char *filename) {
+    sd_message_t msg = {.msg_id = SD_READ_FILE, filename = filename};
 
-void i2s_test() {
-    FILE* f = fopen("/sd/oxp.wav", "rb");
-    if (!f) {
-        printf("Failed to open WAV file\n");
-        return;
-    }
-
-    fseek(f, 0, SEEK_SET);
-    uint8_t header[44];
-    fread(header, 1, 44, f);
-
-    uint8_t buffer[1024];
-    size_t bytes_read;
-
-    while ((bytes_read = fread(buffer, 1, sizeof(buffer), f)) > 0) {
-        size_t bytes_written;
-        i2s_channel_write(tx_handle, buffer, bytes_read, &bytes_written, portMAX_DELAY);
-    }
-
-    fclose(f);
+    sd_send_message(msg);
 }

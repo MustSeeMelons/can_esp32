@@ -16,6 +16,8 @@ void app_main() {
 
     i2s_init();
 
+    i2s_play_wav("oxp.wav");
+
     // obd_init();
 
     // obd_task_start();

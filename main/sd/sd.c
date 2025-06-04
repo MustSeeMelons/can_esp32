@@ -4,9 +4,6 @@ static const char *TAG = "SD";
 
 static uint8_t max_mount_retries = 3;
 
-static uint8_t buffer_index = 0;
-static uint8_t buffers[BUFFER_COUNT][BUFFER_SIZE];
-
 // For recieving files to read
 static QueueHandle_t sd_command_queue_handle = NULL;
 static TaskHandle_t sd_task_handle = NULL;
@@ -88,26 +85,24 @@ static void sd_task(void *pvParameter) {
                 fread(header, 1, 44, f);
 
                 while (true) {
-                    uint8_t *buf = buffers[buffer_index];
-
-                    size_t bytes_read = fread(buf, 1, BUFFER_SIZE, f);
-
                     i2s_audio_message_t msg;
-                    msg.msg_id = AUDIO_CHUNK;
-                    msg.bytes = buf;
-                    msg.len = bytes_read;
 
-                    if (bytes_read == 0) {
-                        msg.bytes = NULL;
+                    BaseType_t status = audio_get_free_buffer(&msg);
+
+                    if (status == pdFALSE) {
+                        ESP_LOGI(TAG, "SD Failed to get free buffer");
+                        vTaskDelay(1);
+                        continue;
                     }
 
-                    i2s_send_message(msg);
+                    size_t bytes_read = fread(msg.bytes, sizeof(uint8_t), BUFFER_SIZE, f);
+                    msg.len = bytes_read;
+
+                    i2s_send_audio_buffer(msg);
 
                     if (bytes_read == 0) {
                         break;
                     }
-
-                    buffer_index = (buffer_index + 1) % BUFFER_COUNT;
 
                     vTaskDelay(1);
                 }

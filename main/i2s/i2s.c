@@ -2,21 +2,37 @@
 
 static const char *TAG = "I2S";
 
-static QueueHandle_t audio_queue_handle;
-static TaskHandle_t audio_task_handle = NULL;
+extern QueueHandle_t buffer_queue_handle;
+static TaskHandle_t playback_task_handle = NULL;
 
 static i2s_chan_handle_t tx_handle;
+
+static int volume = 128; // 0-256 scale
 
 static void audio_task(void *parameter) {
     i2s_audio_message_t msg;
 
     for (;;) {
-        if (xQueueReceive(audio_queue_handle, &msg, portMAX_DELAY)) {
+        if (xQueueReceive(buffer_queue_handle, &msg, portMAX_DELAY)) {
             switch (msg.msg_id) {
             case AUDIO_CHUNK:
-                if (msg.bytes != NULL) {
+                if (msg.len != 0) {
                     size_t bytes_written;
+
+                    int samples_read = msg.len / 2;
+                    int16_t *samples = (int16_t *)msg.bytes;
+
+                    for (int i = 0; i < samples_read; i++) {
+                        int16_t s = samples[i];
+
+                        // Scale and divide by 256
+                        int16_t scaled = (s * volume) >> 8;
+
+                        samples[i] = scaled;
+                    }
+
                     i2s_channel_write(tx_handle, msg.bytes, msg.len, &bytes_written, portMAX_DELAY);
+                    audio_add_free_buffer(&msg);
                 } else {
                     ESP_LOGI(TAG, "Finished playback");
                 }
@@ -57,15 +73,13 @@ void i2s_init() {
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(tx_handle, &std_cfg));
     ESP_ERROR_CHECK(i2s_channel_enable(tx_handle));
 
-    audio_queue_handle = xQueueCreate(BUFFER_COUNT, sizeof(i2s_audio_message_t));
-
     xTaskCreatePinnedToCore(
         &audio_task,
         "audio_task",
         I2S_TASK_STACK_SIZE,
         NULL,
         I2S_TASK_PRIORITY,
-        &audio_task_handle,
+        &playback_task_handle,
         I2S_TASK_CODE_ID
     );
     // clang-format on
@@ -73,12 +87,6 @@ void i2s_init() {
     ESP_LOGI(TAG, "Initialized");
 }
 
-BaseType_t i2s_send_message(i2s_audio_message_t msg) {
-    return xQueueSend(audio_queue_handle, &msg, portMAX_DELAY);
-}
-
-void i2s_play_wav(const char *filename) {
-    sd_message_t msg = {.msg_id = SD_READ_FILE, filename = filename};
-
-    sd_send_message(msg);
+BaseType_t i2s_send_audio_buffer(i2s_audio_message_t msg) {
+    return xQueueSend(buffer_queue_handle, &msg, portMAX_DELAY);
 }

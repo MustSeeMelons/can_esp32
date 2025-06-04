@@ -4,6 +4,7 @@
 #include "freertos/task.h"
 #include <stdio.h>
 
+#include "audio/audio.h"
 #include "http/http_server.h"
 #include "i2s/i2s.h"
 #include "mdns_service/mdns_service.h"
@@ -12,11 +13,14 @@
 #include "wifi/wifi.h"
 
 void app_main() {
+    audio_init();
+
     sd_init();
 
     i2s_init();
 
-    i2s_play_wav("oxp.wav");
+    // xp_shutdown
+    audio_play_wav("xp_logon.wav");
 
     // obd_init();
 

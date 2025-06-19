@@ -19,16 +19,16 @@ void app_main() {
 
     i2s_init();
 
-    // xp_shutdown
+    obd_init();
+
+    obd_task_start();
+
+    wifi_init();
+
+    http_server_init();
+
+    mnds_init();
+
+    // xp_shutdown, XXX this does not play for some reason
     audio_play_wav("xp_logon.wav");
-
-    // obd_init();
-
-    // obd_task_start();
-
-    // wifi_init();
-
-    // http_server_init();
-
-    // mnds_init();
 }

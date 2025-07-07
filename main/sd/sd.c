@@ -50,6 +50,8 @@ static esp_err_t sd_mount_fs() {
 
     if (ret != ESP_OK) {
         ESP_LOGI(TAG, "Failed to mount FS");
+        // De-init spi don't care it it fails
+        spi_bus_free(host.slot);
         return ret;
     } else {
         ESP_LOGI(TAG, "FS mounted");
@@ -121,12 +123,13 @@ esp_err_t sd_init() {
     esp_err_t ret = -1;
     uint8_t retries = 0;
 
-    while (ret != ESP_OK || retries >= max_mount_retries) {
+    while (ret != ESP_OK && retries < max_mount_retries) {
         ret = sd_mount_fs();
         retries++;
     }
 
     if (ret != ESP_OK) {
+        ESP_LOGI(TAG, "Init failed.");
         return ret;
     }
 

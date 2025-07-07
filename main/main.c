@@ -12,10 +12,17 @@
 #include "sd/sd.h"
 #include "wifi/wifi.h"
 
+// TODO add err check for the rest of inits
 void app_main() {
-    audio_init();
+    esp_err_t ret = -1;
 
-    sd_init();
+    ret = sd_init();
+
+    if (ret != ESP_OK) {
+        return;
+    }
+
+    audio_init();
 
     i2s_init();
 

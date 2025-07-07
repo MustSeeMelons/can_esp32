@@ -8,6 +8,7 @@
   width: 100%;
 
   .card {
+    transition: background-color variables.$transition;
     padding: 0;
 
     h3 {
@@ -34,7 +35,11 @@
     }
   }
 
-  .button {
+  .actions {
+    display: flex;
     align-self: flex-end;
+    align-items: center;
+    column-gap: 0.5rem;
+    color: var(--text-color);
   }
 }

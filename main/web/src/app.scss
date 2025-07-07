@@ -41,6 +41,7 @@ html {
     width: 100%;
     background-color: var(--primary-color);
     border-radius: 8px;
+    transition: all variables.$transition;
 
     .route-content {
       display: flex;

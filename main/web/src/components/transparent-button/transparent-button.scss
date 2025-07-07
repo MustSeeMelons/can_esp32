@@ -1,0 +1,14 @@
+@use "../../variables.scss";
+
+.transparent-button {
+  background-color: inherit;
+  box-shadow: none;
+  padding: 0.3rem;
+  display: flex;
+  justify-items: center;
+  color: var(--text-color);
+
+  &:hover {
+    backdrop-filter: brightness(90%);
+  }
+}

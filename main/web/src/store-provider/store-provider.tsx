@@ -2,16 +2,18 @@ import { ComponentChildren, createContext } from "preact";
 import { useState } from "preact/hooks";
 import { ICanMessage } from "../services/can-message-service";
 
-export type CanMessageTree = { [key: number]: ICanMessage[] };
+export type CanMessageMap = { [key: number]: ICanMessage[] };
 
 export interface IStoreContext {
-  canMessages: CanMessageTree;
+  canMessageMap: CanMessageMap;
   addMessage: (msg: ICanMessage) => void;
+  setMessages: (messages: CanMessageMap) => void;
 }
 
 export const StoreContext = createContext<IStoreContext>({
   addMessage: () => {},
-  canMessages: {},
+  canMessageMap: {},
+  setMessages: () => {},
 });
 
 type IStoreProviderProps = {
@@ -19,11 +21,11 @@ type IStoreProviderProps = {
 };
 
 export const StoreProvider = ({ children }: IStoreProviderProps) => {
-  const [canMessages, setCanMessages] = useState<CanMessageTree>({});
+  const [canMessageMap, setCanMessageMap] = useState<CanMessageMap>({});
 
   const addMessage = (msg: ICanMessage) => {
     // Must use set so we can access prev in ws setup handler
-    setCanMessages((prev) => {
+    setCanMessageMap((prev) => {
       if (prev[msg.identifier]) {
         const curr = prev[msg.identifier];
 
@@ -57,8 +59,11 @@ export const StoreProvider = ({ children }: IStoreProviderProps) => {
   };
 
   const storeContextData: IStoreContext = {
-    canMessages,
+    canMessageMap,
     addMessage,
+    setMessages: (messages: CanMessageMap) => {
+      setCanMessageMap(messages);
+    },
   };
 
   return (

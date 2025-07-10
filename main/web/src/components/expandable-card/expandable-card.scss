@@ -1,3 +1,5 @@
+@use "../../variables.scss";
+
 .expandable-card {
   position: relative;
 
@@ -5,7 +7,21 @@
     transition: transform 0.25s ease-in-out;
   }
 
+  .card {
+    transition: background-color variables.$transition;
+    padding: 0;
+
+    h3 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 0;
+      padding: 0.5em;
+      cursor: pointer;
+    }
+  }
+
   #exp-arrow {
+    display: flex;
     padding: 0.5em;
     background-color: transparent;
     position: absolute;

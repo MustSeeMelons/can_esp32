@@ -1,7 +1,7 @@
 import { ComponentChildren } from "preact";
 import "./card.scss";
 
-interface ICardProps {
+export interface ICardProps {
   children: ComponentChildren;
 }
 

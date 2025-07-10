@@ -4,7 +4,7 @@ import { ArrowDown } from "lucide-preact";
 import "./expandable-card.scss";
 import "../../utils/utils.scss";
 
-interface IExpandableCardProps {
+export interface IExpandableCardProps {
   children: ComponentChildren;
   isExpanded: boolean;
 }

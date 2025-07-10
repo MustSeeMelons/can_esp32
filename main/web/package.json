@@ -6,17 +6,26 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@preact/compat": "18.3.1",
-    "preact": "^10.25.4",
     "lucide-preact": "0.475.0",
+    "preact": "10.26.9",
     "preact-iso": "2.9.0"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^4.0.1",
     "@preact/preset-vite": "^2.10.1",
+    "@storybook/addon-a11y": "^9.0.16",
+    "@storybook/addon-docs": "^9.0.16",
+    "@storybook/addon-styling-webpack": "^2.0.0",
+    "@storybook/addon-vitest": "^9.0.16",
+    "@storybook/preact-vite": "^9.0.16",
     "sass": "^1.85.0",
+    "storybook": "^9.0.16",
     "typescript": "~5.7.2",
     "vite": "^6.1.0"
   }

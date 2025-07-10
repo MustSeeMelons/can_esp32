@@ -8,17 +8,6 @@
   width: 100%;
 
   .card {
-    transition: background-color variables.$transition;
-    padding: 0;
-
-    h3 {
-      font-weight: 600;
-      font-size: 1.2rem;
-      margin-bottom: 0;
-      padding: 0.5em;
-      cursor: pointer;
-    }
-
     span {
       display: block;
     }

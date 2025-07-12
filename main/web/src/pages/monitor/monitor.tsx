@@ -7,10 +7,11 @@ import { mapIdentifierToName } from "../../definitions";
 import { Button } from "../../components/button/button";
 import { saveAsJson } from "../../utils";
 import { formatTime } from "../../utils/date-utils";
-import { useContext, useEffect, useState } from "preact/hooks";
+import { useContext, useEffect, useRef, useState } from "preact/hooks";
 import { ExpandableCard } from "../../components/expandable-card/expandable-card";
 import { ListFilter } from "lucide-preact";
 import { TransparentButton } from "../../components/transparent-button/transparent-button";
+import { Anchor } from "../../components/anchor/anchor";
 
 const canMessagesStub: CanMessageMap = (() => {
   return new Array(15)
@@ -47,6 +48,9 @@ const canMessagesStub: CanMessageMap = (() => {
 export const MonitorPage = () => {
   const [isExpanded, setExpanded] = useState<boolean[]>([]);
   let { canMessageMap, setMessages } = useContext(StoreContext);
+
+  const [isFilterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (import.meta.env.VITE_FAKE_MESSAGES === "true") {
@@ -102,7 +106,12 @@ export const MonitorPage = () => {
         >
           Save JSON
         </Button>
-        <TransparentButton onClick={() => {}}>
+        <TransparentButton
+          ref={filterRef}
+          onClick={() => {
+            setFilterOpen((p) => !p);
+          }}
+        >
           <ListFilter size="20px" />
         </TransparentButton>
       </div>
@@ -137,6 +146,20 @@ export const MonitorPage = () => {
           </ExpandableCard>
         );
       })}
+      {console.log(filterRef)}
+      {isFilterOpen && (
+        <Anchor anchorRef={filterRef} options={{ useChildWidth: true }}>
+          <div
+            style={{
+              backgroundColor: "red",
+              padding: "5px",
+              whiteSpace: "pre",
+            }}
+          >
+            howdy thy person
+          </div>
+        </Anchor>
+      )}
     </div>
   );
 };

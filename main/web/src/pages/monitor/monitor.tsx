@@ -12,6 +12,7 @@ import { ExpandableCard } from "../../components/expandable-card/expandable-card
 import { ListFilter } from "lucide-preact";
 import { TransparentButton } from "../../components/transparent-button/transparent-button";
 import { Anchor } from "../../components/anchor/anchor";
+import { useOutsideClick } from "../../hooks/use-outside-click";
 
 const canMessagesStub: CanMessageMap = (() => {
   return new Array(15)
@@ -50,7 +51,10 @@ export const MonitorPage = () => {
   let { canMessageMap, setMessages } = useContext(StoreContext);
 
   const [isFilterOpen, setFilterOpen] = useState(false);
-  const filterRef = useRef<HTMLButtonElement>(null);
+  const filterAnchorRef = useRef<HTMLButtonElement>(null);
+
+  const filterMenuRef = useRef(null);
+  useOutsideClick(() => setFilterOpen(false), [filterMenuRef]);
 
   useEffect(() => {
     if (import.meta.env.VITE_FAKE_MESSAGES === "true") {
@@ -107,7 +111,7 @@ export const MonitorPage = () => {
           Save JSON
         </Button>
         <TransparentButton
-          ref={filterRef}
+          ref={filterAnchorRef}
           onClick={() => {
             setFilterOpen((p) => !p);
           }}
@@ -146,14 +150,19 @@ export const MonitorPage = () => {
           </ExpandableCard>
         );
       })}
-      {console.log(filterRef)}
       {isFilterOpen && (
-        <Anchor anchorRef={filterRef} options={{ useChildWidth: true }}>
+        <Anchor
+          align="auto"
+          anchorRef={filterAnchorRef}
+          options={{ useChildWidth: true }}
+        >
           <div
+            ref={filterMenuRef}
             style={{
               backgroundColor: "red",
               padding: "5px",
               whiteSpace: "pre",
+              margin: "5px",
             }}
           >
             howdy thy person

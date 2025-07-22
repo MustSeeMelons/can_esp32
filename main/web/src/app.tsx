@@ -7,30 +7,37 @@ import { MonitorPage } from "./pages/monitor/monitor";
 import { ThemeProvider } from "./theme-provider/theme.provider";
 import { StoreProvider } from "./store-provider/store-provider";
 import { Content } from "./components/content/content";
+import { ModalProvider } from "./modal-provider/modal-provider";
+import { ModalConsumer } from "./components/modal-consumer/modal-consumer";
 
 export function App() {
   return (
-    <StoreProvider>
-      <ThemeProvider>
-        <Content>
-          <Header />
-          <LocationProvider>
-            <ErrorBoundary
-              onError={() => {
-                // XXX Navigate to an erorr page + create the error page
-              }}
-            >
-              <div class="route-content">
-                <Router>
-                  <Route path="/monitor" component={MonitorPage} />
-                  <Route component={NotFound} default />
-                </Router>
-              </div>
-            </ErrorBoundary>
-          </LocationProvider>
-          <Footer />
-        </Content>
-      </ThemeProvider>
-    </StoreProvider>
+    <ModalProvider>
+      <StoreProvider>
+        <ThemeProvider>
+          <Content>
+            <ModalProvider>
+              <ModalConsumer />
+              <Header />
+              <LocationProvider>
+                <ErrorBoundary
+                  onError={() => {
+                    // XXX Navigate to an erorr page + create the error page
+                  }}
+                >
+                  <div class="route-content">
+                    <Router>
+                      <Route path="/monitor" component={MonitorPage} />
+                      <Route component={NotFound} default />
+                    </Router>
+                  </div>
+                </ErrorBoundary>
+              </LocationProvider>
+              <Footer />
+            </ModalProvider>
+          </Content>
+        </ThemeProvider>
+      </StoreProvider>
+    </ModalProvider>
   );
 }

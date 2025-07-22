@@ -11,7 +11,7 @@ export interface IButtonProps {
 export const Button = forwardRef<HTMLButtonElement, IButtonProps>(
   ({ children, onClick, class: cl }, ref) => {
     return (
-      <button ref={ref} class={`button ${cl}`} onClick={onClick}>
+      <button ref={ref} class={`button${cl ? ` ${cl}` : ""}`} onClick={onClick}>
         {children}
       </button>
     );

@@ -7,11 +7,12 @@ import { mergeRefs } from "../../utils/merge-refs";
 export interface IAnchorProps {
   anchorRef: MutableRef<HTMLElement | null>; // Parent from whom we anchor
   children: ComponentChildren;
+  align?: "left" | "right" | "auto";
   options?: { useChildWidth?: boolean };
 }
 
 export const Anchor = forwardRef<HTMLElement, IAnchorProps>(
-  ({ anchorRef, children, options }, ref) => {
+  ({ anchorRef, children, options, align = "auto" }, ref) => {
     const portalRef = useRef<HTMLDivElement & { updatePosition?: () => void }>(
       null
     );
@@ -57,6 +58,28 @@ export const Anchor = forwardRef<HTMLElement, IAnchorProps>(
 
           if (!portalBox || !anchorBox) {
             return;
+          }
+
+          // Determine target.x based on alignment preference
+          if (align === "right") {
+            target.x = anchorBox.right - portalBox.width;
+          } else if (align === "auto") {
+            const spaceOnRight = window.innerWidth - anchorBox.left;
+            const spaceOnLeft = anchorBox.right;
+
+            if (spaceOnRight >= portalBox.width) {
+              // Enough space to align left
+              target.x = anchorBox.left;
+            } else if (spaceOnLeft >= portalBox.width) {
+              // Align right if not enough room on the right
+              target.x = anchorBox.right - portalBox.width;
+            } else {
+              // Not enough room on either side, clamp later
+              target.x = anchorBox.left;
+            }
+          } else {
+            // Default to left alignment
+            target.x = anchorBox.left;
           }
 
           // Clamp to viewport right edge

@@ -1,10 +1,39 @@
-import { useContext } from "preact/hooks";
+import { useContext, useEffect } from "preact/hooks";
 import "./header.scss";
 import { Moon, Sun, KeySquare } from "lucide-preact";
 import { Theme, ThemeContext } from "../../theme-provider/theme.provider";
+import { ModalContext } from "../../modal-provider/modal-provider";
+import { Button } from "../button/button";
 
 export const Header = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { pushModal, popModal } = useContext(ModalContext);
+
+  useEffect(() => {
+    pushModal(
+      "test",
+      <div style={{ padding: "20px", backgroundColor: "pink" }}>
+        <Button
+          onClick={() => {
+            pushModal(
+              "test2",
+              <div style={{ padding: "20px", backgroundColor: "green" }}>
+                <Button
+                  onClick={() => {
+                    popModal();
+                  }}
+                >
+                  Click me too!
+                </Button>
+              </div>
+            );
+          }}
+        >
+          Click me!
+        </Button>
+      </div>
+    );
+  }, []);
 
   return (
     <div class="header">

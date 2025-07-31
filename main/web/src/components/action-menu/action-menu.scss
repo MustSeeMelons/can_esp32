@@ -1,0 +1,24 @@
+@use "../../variables.scss";
+
+.item-container {
+  box-sizing: border-box;
+  margin-top: 0.3rem;
+  background-color: var(--bg-muted);
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  border-radius: 0.5rem;
+}
+
+.item {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color);
+  padding: 0.5rem;
+  white-space: nowrap;
+
+  &:hover {
+    cursor: pointer;
+    color: var(--accent-color);
+    background-color: var(--primary-color);
+  }
+}

@@ -12,7 +12,7 @@ Avaialble through `obd2.local` with the help of mdns!
 
 ## TODO
 
-- [FE] Pop over component. Set of actions on a button click.
+- [FE] Show all messages in the filter. Show only selected. If none selected - show all.
 - [FE] View message modal. Click say on X, we show only X messages.
 - [FW] Send request? To possibly get RPM reporting.
 - [FE] Send request modal - sends message via websocket, shows mathing messages.

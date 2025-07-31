@@ -52,16 +52,18 @@ html {
 
 :root,
 [data-theme="light"] {
-  --primary-color: #f9fafb;
-  --background-color: #ffffff;
-  --secondary-color: #e5e7eb;
+  --background-color: #f9fafb;
+  --primary-color: #ffffff;
+  --bg-muted: #e5e7eb;
+  --secondary-color: #d1d5db;
   --text-color: #1f2937;
-  --accent-color: #3b82f6;
+  --accent-color: #2563eb;
 }
 
 [data-theme="dark"] {
   --primary-color: #1f2937;
   --background-color: #111827;
+  --bg-muted: #2b3441;
   --secondary-color: #374151;
   --text-color: #f3f4f6;
   --accent-color: #568ed3;

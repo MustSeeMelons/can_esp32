@@ -7,12 +7,10 @@ import { mapIdentifierToName } from "../../definitions";
 import { Button } from "../../components/button/button";
 import { saveAsJson } from "../../utils";
 import { formatTime } from "../../utils/date-utils";
-import { useContext, useEffect, useRef, useState } from "preact/hooks";
+import { useContext, useEffect, useState } from "preact/hooks";
 import { ExpandableCard } from "../../components/expandable-card/expandable-card";
 import { ListFilter } from "lucide-preact";
-import { TransparentButton } from "../../components/transparent-button/transparent-button";
-import { Anchor } from "../../components/anchor/anchor";
-import { useOutsideClick } from "../../hooks/use-outside-click";
+import { ActionMenu } from "../../components/action-menu/action-menu";
 
 const canMessagesStub: CanMessageMap = (() => {
   return new Array(15)
@@ -49,12 +47,6 @@ const canMessagesStub: CanMessageMap = (() => {
 export const MonitorPage = () => {
   const [isExpanded, setExpanded] = useState<boolean[]>([]);
   let { canMessageMap, setMessages } = useContext(StoreContext);
-
-  const [isFilterOpen, setFilterOpen] = useState(false);
-  const filterAnchorRef = useRef<HTMLButtonElement>(null);
-
-  const filterMenuRef = useRef(null);
-  useOutsideClick(() => setFilterOpen(false), [filterMenuRef]);
 
   useEffect(() => {
     if (import.meta.env.VITE_FAKE_MESSAGES === "true") {
@@ -110,14 +102,15 @@ export const MonitorPage = () => {
         >
           Save JSON
         </Button>
-        <TransparentButton
-          ref={filterAnchorRef}
-          onClick={() => {
-            setFilterOpen((p) => !p);
-          }}
-        >
-          <ListFilter size="20px" />
-        </TransparentButton>
+        <ActionMenu
+          btnLabel={<ListFilter size="20px" />}
+          // TODO show all messages for selection
+          items={[
+            { label: "Action 1", onClick: () => {} },
+            { label: "Action 2", onClick: () => {} },
+          ]}
+          variant="transparent"
+        />
       </div>
       {Object.keys(canMessageMap).map((identifierKey, index) => {
         return (
@@ -150,25 +143,6 @@ export const MonitorPage = () => {
           </ExpandableCard>
         );
       })}
-      {isFilterOpen && (
-        <Anchor
-          align="auto"
-          anchorRef={filterAnchorRef}
-          options={{ useChildWidth: true }}
-        >
-          <div
-            ref={filterMenuRef}
-            style={{
-              backgroundColor: "red",
-              padding: "5px",
-              whiteSpace: "pre",
-              margin: "5px",
-            }}
-          >
-            howdy thy person
-          </div>
-        </Anchor>
-      )}
     </div>
   );
 };

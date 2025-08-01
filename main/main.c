@@ -38,4 +38,23 @@ void app_main() {
 
     // xp_shutdown, XXX this does not play for some reason
     audio_play_wav("xp_logon.wav");
+
+    // vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    // clang-format off
+    can_message_t m = {
+        .identifier = 0x7DF,
+         .data = {
+            0x01, // (Protocol Control Information (PCI)) Single frame, 1 bytes
+            0x04, // (Standard Services (SID))
+            0x00, // (Parameter ID (PID))
+            0x00, // Padding
+            0x00,
+            0x00,
+            0x00,
+            0x00
+        }
+    };
+    // clang-format on
+    obd_can_send(m);
 }

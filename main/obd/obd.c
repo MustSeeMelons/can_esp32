@@ -9,6 +9,8 @@ static const uint8_t ws_size = 4 + 1 + 8;
 static QueueHandle_t obd_queue_handle;
 
 void obd_init(void) {
+    obd_queue_handle = xQueueCreate(OBD_SEND_BUFF_COUNT, sizeof(can_message_t));
+
     // Configure TWAI general settings
     twai_general_config_t general_config = {.mode = TWAI_MODE_NORMAL,
                                             .tx_io = TX_PIN,
@@ -76,20 +78,48 @@ static void obd_read_task(void *pvParameter) {
     }
 }
 
-void obd_can_send(uint8_t msg_id) {
-    xQueueSend(obd_queue_handle, &msg_id, portMAX_DELAY);
+void obd_can_send(can_message_t message) {
+    xQueueSend(obd_queue_handle, &message, portMAX_DELAY);
 }
 
 static void obd_send_task(void *pvParameter) {
-    uint8_t msg_id;
+    can_message_t message;
+
     for (;;) {
-        if (xQueueReceive(obd_queue_handle, &msg_id, portMAX_DELAY)) {
-            // TODO do things
+        if (xQueueReceive(obd_queue_handle, &message, portMAX_DELAY)) {
+            // clang-format off
+           twai_message_t twai_message = {
+                .identifier = message.identifier,
+                .data_length_code = 8,
+                .flags = 0
+            };
+            // clang-format on
+            memcpy(twai_message.data, message.data, 8);
+
+            esp_err_t err = twai_transmit(&twai_message, portMAX_DELAY);
+            if (err != ESP_OK) {
+                ESP_LOGI(TAG, "Failed to send message: ID=0x%X", (unsigned int)message.identifier);
+            } else {
+                ESP_LOGI(TAG, "Message sent: ID=0x%X", (unsigned int)message.identifier);
+            }
         }
     }
 }
 
 void obd_task_start(void) {
-    xTaskCreatePinnedToCore(
-        &obd_read_task, "OBD", OBD_TASK_STACK_SIZE, NULL, OBD_TASK_PRIORITY, NULL, OBD_TASK_CORE_ID);
+    xTaskCreatePinnedToCore(&obd_read_task,
+                            "OBD_READ",
+                            OBD_READ_TASK_STACK_SIZE,
+                            NULL,
+                            OBD_READ_TASK_PRIORITY,
+                            NULL,
+                            OBD_READ_TASK_CORE_ID);
+
+    xTaskCreatePinnedToCore(&obd_send_task,
+                            "OBD_WRITE",
+                            OBD_WRITE_TASK_STACK_SIZE,
+                            NULL,
+                            OBD_WRITE_TASK_PRIORITY,
+                            NULL,
+                            OBD_WRITE_TASK_CORE_ID);
 }

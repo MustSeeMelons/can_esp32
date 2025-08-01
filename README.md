@@ -12,11 +12,27 @@ Avaialble through `obd2.local` with the help of mdns!
 
 ## TODO
 
+- [FE] Command selection & send via web-socket to server.
+- [FW] Receive web-socket messages & react to them.
 - [FE] Show all messages in the filter. Show only selected. If none selected - show all.
 - [FE] View message modal. Click say on X, we show only X messages.
 - [FW] Send request? To possibly get RPM reporting.
 - [FE] Send request modal - sends message via websocket, shows mathing messages.
 - Plug in device to gather more data points - need to decipher the messages.
+
+## Notes to future self
+
+- Implement the upload mechanism that all ESP32 baords use. Turning things on/off is annoying. But it was cheaper!
+
+## How to flash
+
+1. Connect the FTDI FT232RL and power it on.
+2. Connect 12V, GND leads and power on the power supply.
+3. Turn off both, turn back the power supply.
+
+### Dev Board
+
+Keep down the `boot button while powering on.
 
 ## Julie OBD2 emulator
 
@@ -27,6 +43,10 @@ BLACK: CAN-H
 WHITE: CAN-L
 
 ## SPIFFS
+
+## CAN (OBDII)
+
+- 
 
 ## Websocket
 

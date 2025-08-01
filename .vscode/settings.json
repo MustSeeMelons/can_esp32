@@ -34,7 +34,8 @@
         "stdint.h": "c",
         "sdmmc_cmd.h": "c",
         "definitions.h": "c",
-        "i2s.h": "c"
+        "i2s.h": "c",
+        "esp_http_server.h": "c"
     },
     "idf.flashType": "UART"
 }

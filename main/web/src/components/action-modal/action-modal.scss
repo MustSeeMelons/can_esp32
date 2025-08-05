@@ -1,0 +1,42 @@
+@use "../../variables.scss";
+
+.action-modal {
+  box-sizing: border-box;
+  min-width: 400px;
+  padding: 1rem;
+  background-color: var(--background-color);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  border: 1px solid var(--text-color);
+
+  @media (max-width: variables.$screen-md) {
+    min-width: unset;
+    width: 100%;
+    border: none;
+    border-radius: 0;
+  }
+
+  h2 {
+    color: var(--text-color);
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .action-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .card {
+    background-color: var(--secondary-color);
+    user-select: none;
+  }
+
+  .expandable-content {
+    padding: 1rem;
+    backdrop-filter: brightness(90%);
+  }
+}

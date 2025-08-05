@@ -9,34 +9,37 @@ import { StoreProvider } from "./store-provider/store-provider";
 import { Content } from "./components/content/content";
 import { ModalProvider } from "./modal-provider/modal-provider";
 import { ModalConsumer } from "./components/modal-consumer/modal-consumer";
+import { SocketProvider } from "./socket-provider/socket-provider";
 
 export function App() {
   return (
     <ModalProvider>
       <StoreProvider>
-        <ThemeProvider>
-          <Content>
-            <ModalProvider>
-              <ModalConsumer />
-              <Header />
-              <LocationProvider>
-                <ErrorBoundary
-                  onError={() => {
-                    // XXX Navigate to an erorr page + create the error page
-                  }}
-                >
-                  <div class="route-content">
-                    <Router>
-                      <Route path="/monitor" component={MonitorPage} />
-                      <Route component={NotFound} default />
-                    </Router>
-                  </div>
-                </ErrorBoundary>
-              </LocationProvider>
-              <Footer />
-            </ModalProvider>
-          </Content>
-        </ThemeProvider>
+        <ModalProvider>
+          <ModalConsumer />
+          <ThemeProvider>
+            <SocketProvider>
+              <Content>
+                <Header />
+                <LocationProvider>
+                  <ErrorBoundary
+                    onError={() => {
+                      // XXX Navigate to an erorr page + create the error page
+                    }}
+                  >
+                    <div class="route-content">
+                      <Router>
+                        <Route path="/monitor" component={MonitorPage} />
+                        <Route component={NotFound} default />
+                      </Router>
+                    </div>
+                  </ErrorBoundary>
+                </LocationProvider>
+                <Footer />
+              </Content>
+            </SocketProvider>
+          </ThemeProvider>
+        </ModalProvider>
       </StoreProvider>
     </ModalProvider>
   );

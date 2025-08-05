@@ -7,20 +7,30 @@
   justify-content: center;
   width: 100%;
   height: 100vh;
-  background-color: var(--primary-color);
   z-index: 1000;
   box-sizing: border-box;
   margin: -1em;
   transition: opacity variables.$transition;
-  filter: opacity(80%);
   backdrop-filter: blur(5px);
   pointer-events: none;
 
   > * {
     pointer-events: all;
+    filter: opacity(100%);
   }
+}
+
+.cosumer-open {
+  pointer-events: all;
 }
 
 .modal-child {
   position: fixed;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: variables.$screen-md) {
+    width: 100%;
+    height: 100%;
+  }
 }

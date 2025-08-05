@@ -14,6 +14,7 @@ Avaialble through `obd2.local` with the help of mdns!
 
 - [FE] Command selection & send via web-socket to server.
 - [FW] Receive web-socket messages & react to them.
+- [FE] GZIP the Preact app
 - [FE] Show all messages in the filter. Show only selected. If none selected - show all.
 - [FE] View message modal. Click say on X, we show only X messages.
 - [FW] Send request? To possibly get RPM reporting.

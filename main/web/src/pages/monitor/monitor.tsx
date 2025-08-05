@@ -9,8 +9,11 @@ import { saveAsJson } from "../../utils";
 import { formatTime } from "../../utils/date-utils";
 import { useContext, useEffect, useState } from "preact/hooks";
 import { ExpandableCard } from "../../components/expandable-card/expandable-card";
-import { ListFilter } from "lucide-preact";
+import { ListFilter, SquareActivity } from "lucide-preact";
 import { ActionMenu } from "../../components/action-menu/action-menu";
+import { TransparentButton } from "../../components/transparent-button/transparent-button";
+import { ModalContext } from "../../modal-provider/modal-provider";
+import { ActionModal } from "../../components/action-modal/action-modal";
 
 const canMessagesStub: CanMessageMap = (() => {
   return new Array(15)
@@ -47,6 +50,7 @@ const canMessagesStub: CanMessageMap = (() => {
 export const MonitorPage = () => {
   const [isExpanded, setExpanded] = useState<boolean[]>([]);
   let { canMessageMap, setMessages } = useContext(StoreContext);
+  const { pushModal } = useContext(ModalContext);
 
   useEffect(() => {
     if (import.meta.env.VITE_FAKE_MESSAGES === "true") {
@@ -103,7 +107,7 @@ export const MonitorPage = () => {
           Save JSON
         </Button>
         <ActionMenu
-          btnLabel={<ListFilter size="20px" />}
+          btnLabel={<ListFilter size="25px" />}
           // TODO show all messages for selection
           items={[
             { label: "Action 1", onClick: () => {} },
@@ -111,6 +115,14 @@ export const MonitorPage = () => {
           ]}
           variant="transparent"
         />
+        <TransparentButton
+          title="Actions"
+          onClick={() => {
+            pushModal("action-modal", <ActionModal />);
+          }}
+        >
+          <SquareActivity size={"25px"} />
+        </TransparentButton>
       </div>
       {Object.keys(canMessageMap).map((identifierKey, index) => {
         return (

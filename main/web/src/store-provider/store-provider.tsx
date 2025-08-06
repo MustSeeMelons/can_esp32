@@ -2,7 +2,7 @@ import { ComponentChildren, createContext } from "preact";
 import { useState } from "preact/hooks";
 import { ICanMessage } from "../services/can-message-service";
 
-export type CanMessageMap = { [key: number]: ICanMessage[] };
+export type CanMessageMap = { [key: string]: ICanMessage[] };
 
 export interface IStoreContext {
   canMessageMap: CanMessageMap;

@@ -8,6 +8,26 @@ static const uint8_t ws_size = 4 + 1 + 8;
 
 static QueueHandle_t obd_queue_handle;
 
+// clang-format off
+static can_message_t clear_dtc_can_msg = {
+    .identifier = 0x7DF,
+        .data = {
+        0x01, // (Protocol Control Information (PCI)) Single frame, 1 bytes
+        0x04, // (Standard Services (SID))
+        0x00, // (Parameter ID (PID))
+        0x00, // Padding
+        0x00,
+        0x00,
+        0x00,
+        0x00
+    }
+};
+// clang-format on
+
+void obd_clear_dtc() {
+    obd_can_send(clear_dtc_can_msg);
+}
+
 void obd_init(void) {
     obd_queue_handle = xQueueCreate(OBD_SEND_BUFF_COUNT, sizeof(can_message_t));
 

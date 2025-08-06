@@ -12,6 +12,7 @@ Avaialble through `obd2.local` with the help of mdns!
 
 ## TODO
 
+- [FW] SD Card logger.
 - [FE] Command selection & send via web-socket to server.
 - [FW] Receive web-socket messages & react to them.
 - [FE] GZIP the Preact app

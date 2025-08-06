@@ -17,3 +17,7 @@ type Story = StoryObj<IButtonProps>;
 export const Standard: Story = {
   args: { children: "Regular button" },
 };
+
+export const Disabled: Story = {
+  args: { children: "Disabled button", disabled: true },
+};

@@ -1,4 +1,5 @@
 #include "http_server.h"
+#include "obd/obd.h"
 #include <sys/stat.h>
 
 #define MAX_CLIENTS 3
@@ -76,6 +77,18 @@ static esp_err_t httpd_server_index_css_handler(httpd_req_t *req) {
     return ESP_OK;
 }
 
+static void httpd_server_process_ws_message(httpd_ws_frame_t *ws_pkt) {
+    uint16_t msg_id = ws_pkt->payload[0] << 8 & ws_pkt->payload[1];
+
+    switch (msg_id) {
+    case 1:
+        obd_clear_dtc();
+        break;
+    default:
+        break;
+    }
+}
+
 static esp_err_t ws_open_handler(httpd_req_t *req) {
     if (req->method == HTTP_GET) {
         ESP_LOGI(TAG, "WebSocker Handshake done!");
@@ -121,10 +134,10 @@ static esp_err_t ws_open_handler(httpd_req_t *req) {
         ((uint8_t *)ws_pkt.payload)[ws_pkt.len] = 0;
         ESP_LOGI(TAG, "Received packet with message: %s", ws_pkt.payload);
 
-        // TODO do something with the message, most likely send it to OBD task
+        httpd_server_process_ws_message(&ws_pkt);
 
-        // Send a response (echo back the received message)
-        ret = httpd_ws_send_frame(req, &ws_pkt);
+        // XXX echo test
+        // ret = httpd_ws_send_frame(req, &ws_pkt);
 
         free(ws_pkt.payload);
 

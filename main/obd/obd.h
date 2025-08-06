@@ -24,4 +24,6 @@ void obd_task_start(void);
 
 void obd_can_send(can_message_t message);
 
+void obd_clear_dtc();
+
 #endif

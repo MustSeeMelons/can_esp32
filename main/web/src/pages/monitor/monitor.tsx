@@ -134,8 +134,12 @@ export const MonitorPage = () => {
                 );
               }}
             >
-              ID: 0x{new Number(identifierKey).toString(16)} [
-              {mapIdentifierToName(Number(identifierKey))}]
+              ID: 0x
+              {new Number(identifierKey)
+                .toString(16)
+                .toUpperCase()
+                .padStart(3, "0")}
+              [{mapIdentifierToName(Number(identifierKey))}]
             </h3>
             {isExpanded[index] &&
               canMessageMap[Number(identifierKey)].map((msg) => {

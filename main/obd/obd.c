@@ -4,6 +4,7 @@
 
 static const char *TAG = "OBD";
 
+// 32 bit id, 8 bit length, 64 bit data
 static const uint8_t ws_size = 4 + 1 + 8;
 
 static QueueHandle_t obd_queue_handle;
@@ -22,9 +23,24 @@ static can_message_t clear_dtc_can_msg = {
         0x00
     }
 };
+
+static can_message_t rpm_req_can_msg = {
+    .identifier = 0x7DF,
+    .data = {
+        0x02,  // Single frame, 2 data bytes
+        0x01,  // Mode 01 - Show current data
+        0x0C,  // PID 0x0C - Engine RPM
+        0x00,  // Padding
+        0x00,
+        0x00,
+        0x00,
+        0x00
+    }
+};
 // clang-format on
 
 void obd_clear_dtc() {
+    ESP_LOGI(TAG, "Sending DTC CAN message");
     obd_can_send(clear_dtc_can_msg);
 }
 

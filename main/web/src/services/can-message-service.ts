@@ -1,3 +1,5 @@
+import { PID } from "../definitions";
+
 interface ICanMessageService {
   transformMessage: (data: ArrayBuffer) => ICanMessage;
 }
@@ -30,4 +32,14 @@ export const canMessageService: ICanMessageService = {
 
     return canMsg;
   },
+};
+
+export const getRpm = (message: ICanMessage) => {
+  const isCorrectBytes = message.data[0] === 0x04;
+  const isPositive = message.data[1] === PID.ENGINE_RPM + 0x40;
+  const isPid = (message.data[2] = PID.ENGINE_RPM);
+
+  if (isCorrectBytes && isPositive && isPid) {
+    return ((message.data[3] << 8) | message.data[4]) / 4;
+  }
 };

@@ -48,7 +48,9 @@ WHITE: CAN-L
 
 ## CAN (OBDII)
 
-- 
+`0x7DF` is a broadcast to all devices.
+`0x7E8` should be the engine
+`0x7e9` should be transmission
 
 ## Websocket
 

@@ -16,9 +16,9 @@ export function App() {
     <ModalProvider>
       <StoreProvider>
         <ModalProvider>
-          <ModalConsumer />
           <ThemeProvider>
             <SocketProvider>
+              <ModalConsumer />
               <Content>
                 <Header />
                 <LocationProvider>

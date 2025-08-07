@@ -78,13 +78,17 @@ static esp_err_t httpd_server_index_css_handler(httpd_req_t *req) {
 }
 
 static void httpd_server_process_ws_message(httpd_ws_frame_t *ws_pkt) {
-    uint16_t msg_id = ws_pkt->payload[0] << 8 & ws_pkt->payload[1];
+    uint16_t msg_id = ((uint16_t)ws_pkt->payload[0] << 8) | ws_pkt->payload[1];
+
+    ESP_LOGI(TAG, "WS Message request: %d", msg_id);
 
     switch (msg_id) {
     case 1:
         obd_clear_dtc();
         break;
     default:
+        ESP_LOGI(TAG, "Unknown message!");
+
         break;
     }
 }
@@ -102,7 +106,7 @@ static esp_err_t ws_open_handler(httpd_req_t *req) {
     // Setup memory for ws packet
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
-    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
+    ws_pkt.type = HTTPD_WS_TYPE_BINARY;
 
     // Receive the ws packet
     esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, 0);
@@ -114,8 +118,7 @@ static esp_err_t ws_open_handler(httpd_req_t *req) {
 
     // If we have a length, recieve the data
     if (ws_pkt.len) {
-        // +1 for NULL terminator
-        ws_pkt.payload = malloc(ws_pkt.len + 1);
+        ws_pkt.payload = malloc(ws_pkt.len);
 
         if (ws_pkt.payload == NULL) {
             ESP_LOGE(TAG, "Failed to allocate memory for WebSocket payload");
@@ -130,9 +133,7 @@ static esp_err_t ws_open_handler(httpd_req_t *req) {
             return ret;
         }
 
-        // Add NULL terminator
-        ((uint8_t *)ws_pkt.payload)[ws_pkt.len] = 0;
-        ESP_LOGI(TAG, "Received packet with message: %s", ws_pkt.payload);
+        ESP_LOGI(TAG, "Received binary packet (%d bytes):", ws_pkt.len);
 
         httpd_server_process_ws_message(&ws_pkt);
 

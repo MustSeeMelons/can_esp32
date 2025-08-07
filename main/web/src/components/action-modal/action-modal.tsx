@@ -21,7 +21,7 @@ export const ActionModal = () => {
 
   useEffect(() => {
     const possibleKeys = Object.keys(canMessageMap).filter((idKey) => {
-      if (+idKey >= 0x7e8 && +idKey < 0x7ef) {
+      if (+idKey >= 0x7e8 && +idKey <= 0x7ef) {
         return true;
       }
 
@@ -31,6 +31,8 @@ export const ActionModal = () => {
     if (
       possibleKeys.some((k) => {
         const message = canMessageMap[k];
+
+        console.log("Posible ECU response:", message);
 
         // We are hoarding messages at the momment - delete the one we were waiting for?
         return message.some((can) => {

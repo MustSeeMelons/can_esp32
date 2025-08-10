@@ -1,11 +1,17 @@
+export enum CAN_ID {
+  Engine = 0x7e8,
+  Transmission = 0x7e9,
+  ABS = 0x7ea,
+}
+
 // Map OBD2 can message identifier to human readable name
 export const mapIdentifierToName = (identifier: number) => {
   switch (identifier) {
-    case 0x7e8:
+    case CAN_ID.Engine:
       return "Engine ECU";
-    case 0x7e9:
+    case CAN_ID.Transmission:
       return "Transmission ECU";
-    case 0x7ea:
+    case CAN_ID.ABS:
       return "ABS ECU";
     default:
       return "unknown";

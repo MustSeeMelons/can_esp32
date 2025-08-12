@@ -13,6 +13,11 @@ export const Content = ({ children }: IContentProps) => {
   const { setSocket } = useContext(SocketContext);
 
   useEffect(() => {
+    // Should only be done on the read hardware
+    if (process.env.NODE_ENV === "development") {
+      return;
+    }
+
     const url = `ws://${window.location.host}/ws`;
     const socket = new WebSocket(url);
     socket.binaryType = "arraybuffer";

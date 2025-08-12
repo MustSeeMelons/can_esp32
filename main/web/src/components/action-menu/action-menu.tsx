@@ -15,9 +15,15 @@ export interface IActionMenuProps {
   btnLabel: ComponentChildren;
   items: IActionMenuItem[];
   variant: "regular" | "transparent";
+  isCloseOnClick?: boolean;
 }
 
-export const ActionMenu = ({ btnLabel, items, variant }: IActionMenuProps) => {
+export const ActionMenu = ({
+  btnLabel,
+  items,
+  variant,
+  isCloseOnClick = true,
+}: IActionMenuProps) => {
   const [isOpen, setOpen] = useState(false);
   const ref = useRef(null);
   const actionRef = useRef(null);
@@ -46,7 +52,9 @@ export const ActionMenu = ({ btnLabel, items, variant }: IActionMenuProps) => {
                   class="item"
                   onClick={() => {
                     item.onClick();
-                    setOpen(false);
+                    {
+                      isCloseOnClick && setOpen(false);
+                    }
                   }}
                 >
                   {item.label}

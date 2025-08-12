@@ -12,14 +12,13 @@ Avaialble through `obd2.local` with the help of mdns!
 
 ## TODO
 
+- [XXX] Check messages, responses to DTC.
+- [FE][FW] RPM request/response, visualization.
+- [FW] Play audio on startup (800RPM) and shutdown (?) (0RPM).
+- [FE][FW] Oil Temp request/response, visualization.
 - [FW] SD Card logger.
-- [FE] Command selection & send via web-socket to server.
-- [FW] Receive web-socket messages & react to them.
 - [FE] GZIP the Preact app
-- [FE] Show all messages in the filter. Show only selected. If none selected - show all.
-- [FE] View message modal. Click say on X, we show only X messages.
-- [FW] Send request? To possibly get RPM reporting.
-- [FE] Send request modal - sends message via websocket, shows mathing messages.
+
 - Plug in device to gather more data points - need to decipher the messages.
 
 ## Notes to future self

@@ -7,13 +7,15 @@ import { mapIdentifierToName } from "../../definitions";
 import { Button } from "../../components/button/button";
 import { saveAsJson } from "../../utils";
 import { formatTime } from "../../utils/date-utils";
-import { useContext, useEffect, useState } from "preact/hooks";
+import { useContext, useEffect, useMemo, useState } from "preact/hooks";
 import { ExpandableCard } from "../../components/expandable-card/expandable-card";
 import { ListFilter, SquareActivity } from "lucide-preact";
 import { ActionMenu } from "../../components/action-menu/action-menu";
 import { TransparentButton } from "../../components/transparent-button/transparent-button";
 import { ModalContext } from "../../modal-provider/modal-provider";
 import { ActionModal } from "../../components/action-modal/action-modal";
+import { Checkbox } from "../../components/checkbox/checkbox";
+import { toHex } from "../../utils/number-utils";
 
 const canMessagesStub: CanMessageMap = (() => {
   return new Array(15)
@@ -48,27 +50,85 @@ const canMessagesStub: CanMessageMap = (() => {
 })();
 
 export const MonitorPage = () => {
-  const [isExpanded, setExpanded] = useState<boolean[]>([]);
+  const [isExpanded, setExpanded] = useState<{ [key: string]: boolean }>({}); // Identifier children open
+  const [isSelected, setSelected] = useState<{ [key: string]: boolean }>({}); // Identifier rendered
   let { canMessageMap, setMessages } = useContext(StoreContext);
   const { pushModal } = useContext(ModalContext);
 
+  // Add fake messages if configured
   useEffect(() => {
     if (import.meta.env.VITE_FAKE_MESSAGES === "true") {
       setMessages(canMessagesStub);
     }
   }, []);
 
+  // React to new messages arriving
   useEffect(() => {
-    const currCount = Object.keys(canMessageMap).length;
+    if (Object.keys(isExpanded).length === 0) {
+      const initial = Object.keys(canMessageMap).reduce<{
+        [key: string]: boolean;
+      }>((acc, curr) => {
+        acc[curr] = false;
 
-    if (isExpanded.length === 0) {
-      setExpanded(new Array(currCount).fill(false));
+        return acc;
+      }, {});
+
+      setSelected(initial);
+      setExpanded(initial);
     } else {
-      const diff = currCount - isExpanded.length;
+      const newArrivals = Object.keys(canMessageMap)
+        .filter((k) => isExpanded[k] === undefined)
+        .reduce<{
+          [key: string]: boolean;
+        }>((acc, curr) => {
+          acc[curr] = false;
 
-      setExpanded([...isExpanded, ...new Array(diff).fill(false)]);
+          return acc;
+        }, {});
+
+      // Set expanded to false to new arrivals
+      setExpanded({ ...isExpanded, ...newArrivals });
+      setSelected({ ...isExpanded, ...newArrivals });
     }
   }, [canMessageMap]);
+
+  const filters = useMemo(() => {
+    return Object.keys(canMessageMap).map((k) => {
+      return {
+        label: (
+          <Checkbox
+            label={`${toHex(k)} [${mapIdentifierToName(Number(k))}]`}
+            checked={isSelected[k]}
+            onChange={(v) => {
+              setSelected((prev) => {
+                return {
+                  ...prev,
+                  [k]: v,
+                };
+              });
+            }}
+          />
+        ),
+        onClick: () => {},
+      };
+    });
+  }, [canMessageMap, isSelected]);
+
+  const canMessageToRender = useMemo(() => {
+    const selected = Object.keys(isSelected).filter((k) => {
+      return isSelected[k];
+    });
+
+    if (selected.length > 0) {
+      return selected.reduce<CanMessageMap>((acc, curr) => {
+        acc[curr] = canMessageMap[curr];
+
+        return acc;
+      }, {});
+    }
+
+    return canMessageMap;
+  }, [canMessageMap, isSelected]);
 
   return (
     <div class="monitor-page">
@@ -76,7 +136,8 @@ export const MonitorPage = () => {
         <Button
           onClick={() => {
             setMessages({});
-            setExpanded([]);
+            setExpanded({});
+            setSelected({});
           }}
         >
           Clear
@@ -108,12 +169,9 @@ export const MonitorPage = () => {
         </Button>
         <ActionMenu
           btnLabel={<ListFilter size="25px" />}
-          // TODO show all messages for selection
-          items={[
-            { label: "Action 1", onClick: () => {} },
-            { label: "Action 2", onClick: () => {} },
-          ]}
+          items={filters}
           variant="transparent"
+          isCloseOnClick={false}
         />
         <TransparentButton
           title="Actions"
@@ -124,14 +182,17 @@ export const MonitorPage = () => {
           <SquareActivity size={"25px"} />
         </TransparentButton>
       </div>
-      {Object.keys(canMessageMap).map((identifierKey, index) => {
+      {Object.keys(canMessageToRender).map((identifierKey) => {
         return (
-          <ExpandableCard isExpanded={isExpanded[index]}>
+          <ExpandableCard isExpanded={isExpanded[identifierKey]}>
             <h3
               onClick={() => {
-                setExpanded(
-                  isExpanded.map((exp, idx) => (idx === index ? !exp : exp))
-                );
+                setExpanded((prev) => {
+                  return {
+                    ...prev,
+                    [identifierKey]: !prev[identifierKey],
+                  };
+                });
               }}
             >
               ID: 0x
@@ -141,8 +202,8 @@ export const MonitorPage = () => {
                 .padStart(3, "0")}
               [{mapIdentifierToName(Number(identifierKey))}]
             </h3>
-            {isExpanded[index] &&
-              canMessageMap[Number(identifierKey)].map((msg) => {
+            {isExpanded[identifierKey] &&
+              canMessageToRender[Number(identifierKey)].map((msg) => {
                 return (
                   <div>
                     <span>[{formatTime(msg.timestamp)}]</span>

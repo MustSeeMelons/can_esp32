@@ -15,9 +15,10 @@
   height: 100%;
 
   > div {
+    flex-grow: 0;
     box-sizing: border-box;
-    width: 100%;
-    height: 100%;
+    width: 32px;
+    height: 32px;
     border: 4px solid var(--secondary-color);
     border-top-color: var(--accent-color);
     border-radius: 50%;

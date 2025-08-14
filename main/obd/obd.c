@@ -44,6 +44,11 @@ void obd_clear_dtc() {
     obd_can_send(clear_dtc_can_msg);
 }
 
+void obd_request_rpm() {
+    ESP_LOGI(TAG, "Sending RPM request CAN message");
+    obd_can_send(rpm_req_can_msg);
+}
+
 void obd_init(void) {
     obd_queue_handle = xQueueCreate(OBD_SEND_BUFF_COUNT, sizeof(can_message_t));
 

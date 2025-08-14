@@ -19,8 +19,8 @@ export const Loader = ({ size, style }: ILoaderProps) => {
   };
 
   return (
-    <div class="loader" style={getStyle()}>
-      <div />
+    <div class="loader">
+      <div style={{ ...getStyle() }} />
     </div>
   );
 };

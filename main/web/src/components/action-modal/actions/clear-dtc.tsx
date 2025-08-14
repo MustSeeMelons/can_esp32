@@ -49,12 +49,13 @@ export const ClearDTC = () => {
       <Button
         disabled={isClearingDTC}
         onClick={() => {
+          // XXX timeout for reset?
           setClearingDTC(true);
           getSocket()?.send(new Uint8Array(WS_MESSAGE.CLEAR_DTC));
         }}
       >
         {isClearingDTC ? (
-          <Loader size="small" style={{ padding: "0 65px" }} />
+          <Loader size="small" style={{ margin: "0 65px" }} />
         ) : (
           "Clear error codes"
         )}

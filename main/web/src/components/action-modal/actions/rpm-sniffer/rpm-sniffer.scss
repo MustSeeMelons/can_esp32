@@ -1,0 +1,52 @@
+.rpm-sniffer {
+  display: flex;
+  flex-direction: column;
+
+  .dash {
+    overflow: hidden;
+    margin-top: 10px;
+    align-self: center;
+    position: relative;
+
+    &:after {
+      position: absolute;
+      display: block;
+      content: "";
+      border-top-left-radius: 100%;
+      background-color: var(--secondary-color);
+      filter: brightness(90%);
+      width: 75px;
+      height: 75px;
+      bottom: 0;
+      right: 0;
+    }
+  }
+}
+
+.dash {
+  position: relative;
+  height: 200px;
+  width: 200px;
+  background-color: var(--text-color);
+  border-top-left-radius: 100%;
+}
+
+.needle {
+  transition: all linear 0.1s;
+  position: absolute;
+  bottom: 0;
+  left: 0%;
+  height: 4px;
+  width: 100%;
+  background-color: red;
+  transform-origin: bottom right;
+  filter: blur(2px);
+}
+
+.rpm {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  padding: 10px;
+}

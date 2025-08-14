@@ -1,4 +1,4 @@
-import { PID } from "../definitions";
+import { PID, SID } from "../definitions";
 
 interface ICanMessageService {
   transformMessage: (data: ArrayBuffer) => ICanMessage;
@@ -9,6 +9,7 @@ export interface ICanMessage {
   dataLengthCode: number;
   data: number[];
   timestamp: Date;
+  consumed: boolean;
 }
 
 export const canMessageService: ICanMessageService = {
@@ -18,6 +19,7 @@ export const canMessageService: ICanMessageService = {
     const dlc = buff[4];
 
     const canMsg: ICanMessage = {
+      consumed: false,
       timestamp: new Date(),
       identifier: buff[0] | (buff[1] << 8) | (buff[2] << 16) | (buff[3] << 24),
       dataLengthCode: dlc,
@@ -36,7 +38,7 @@ export const canMessageService: ICanMessageService = {
 
 export const getRpm = (message: ICanMessage) => {
   const isCorrectBytes = message.data[0] === 0x04;
-  const isPositive = message.data[1] === PID.ENGINE_RPM + 0x40;
+  const isPositive = message.data[1] === SID.SHOW_DATA + 0x40;
   const isPid = (message.data[2] = PID.ENGINE_RPM);
 
   if (isCorrectBytes && isPositive && isPid) {

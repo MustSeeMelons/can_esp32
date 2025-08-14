@@ -86,6 +86,9 @@ static void httpd_server_process_ws_message(httpd_ws_frame_t *ws_pkt) {
     case 1:
         obd_clear_dtc();
         break;
+    case 2:
+        obd_request_rpm();
+        break;
     default:
         ESP_LOGI(TAG, "Unknown message!");
 

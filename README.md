@@ -12,12 +12,12 @@ Avaialble through `obd2.local` with the help of mdns!
 
 ## TODO
 
-- [XXX] Check messages, responses to DTC.
-- [FE][FW] RPM request/response, visualization.
+- [XXX] Check messages, responses to DTC, RPM.
 - [FW] Play audio on startup (800RPM) and shutdown (?) (0RPM).
 - [FE][FW] Oil Temp request/response, visualization.
 - [FW] SD Card logger.
 - [FE] GZIP the Preact app
+- [FW] Spiffs for web app storage?
 
 - Plug in device to gather more data points - need to decipher the messages.
 

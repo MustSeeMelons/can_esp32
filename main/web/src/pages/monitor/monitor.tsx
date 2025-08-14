@@ -30,18 +30,21 @@ const canMessagesStub: CanMessageMap = (() => {
           data: [255, 255, 255, 255, 255, 255, 255, 255],
           dataLengthCode: 8,
           identifier: id,
+          consumed: false,
         },
         {
           timestamp: new Date(),
           data: [255, 255, 255, 255, 255, 255, 255, 255],
           dataLengthCode: 8,
           identifier: id,
+          consumed: false,
         },
         {
           timestamp: new Date(),
           data: [255, 255, 255, 255, 255, 255, 255, 255],
           dataLengthCode: 8,
           identifier: id,
+          consumed: false,
         },
       ];
 
@@ -86,9 +89,11 @@ export const MonitorPage = () => {
           return acc;
         }, {});
 
-      // Set expanded to false to new arrivals
-      setExpanded({ ...isExpanded, ...newArrivals });
-      setSelected({ ...isExpanded, ...newArrivals });
+      if (Object.keys(newArrivals).length !== 0) {
+        // Set expanded to false to new arrivals
+        setExpanded({ ...isExpanded, ...newArrivals });
+        setSelected({ ...isExpanded, ...newArrivals });
+      }
     }
   }, [canMessageMap]);
 
@@ -153,9 +158,7 @@ export const MonitorPage = () => {
                 dlc: message[0].dataLengthCode,
                 data: message.map((msg) => {
                   return {
-                    data: msg.data
-                      .map((d) => `0x${d.toString(16).toUpperCase()}`)
-                      .join(", "),
+                    data: msg.data.map((d) => toHex(d, 2)).join(", "),
                     timestamp: formatTime(msg.timestamp),
                   };
                 }),
@@ -204,11 +207,7 @@ export const MonitorPage = () => {
                 return (
                   <div>
                     <span>[{formatTime(msg.timestamp)}]</span>
-                    <span>
-                      {msg.data
-                        .map((d) => `0x${d.toString(16).toUpperCase()}`)
-                        .join(" ")}
-                    </span>
+                    <span>{msg.data.map((d) => toHex(d, 2)).join(" ")}</span>
                     {/* TODO add decoded message on we know what it is */}
                     {/* <div>99mph</div> */}
                   </div>

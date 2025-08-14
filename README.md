@@ -13,6 +13,7 @@ Avaialble through `obd2.local` with the help of mdns!
 ## TODO
 
 - [XXX] Check messages, responses to DTC, RPM.
+- [FW/FE] Read DTC
 - [FW] Play audio on startup (800RPM) and shutdown (?) (0RPM).
 - [FE][FW] Oil Temp request/response, visualization.
 - [FW] SD Card logger.

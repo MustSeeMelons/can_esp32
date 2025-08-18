@@ -25,7 +25,7 @@ static can_message_t clear_dtc_can_msg = {
 };
 
 static can_message_t rpm_req_can_msg = {
-    .identifier = 0x7DF,
+    .identifier = 0x7E0,
     .data = {
         0x02,  // Single frame, 2 data bytes
         0x01,  // Mode 01 - Show current data

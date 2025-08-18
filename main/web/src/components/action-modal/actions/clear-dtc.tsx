@@ -18,8 +18,6 @@ export const ClearDTC = () => {
       return;
     }
 
-    console.log("Looking for clear DTC response...");
-
     const engineMessages = canMessageMap[CAN_ID.Engine];
     const idx = engineMessages.findIndex((m) => {
       return (
@@ -49,9 +47,14 @@ export const ClearDTC = () => {
       <Button
         disabled={isClearingDTC}
         onClick={() => {
-          // XXX timeout for reset?
           setClearingDTC(true);
           getSocket()?.send(new Uint8Array(WS_MESSAGE.CLEAR_DTC));
+
+          // My 2006 Focus does not seem to response to DTC, but it clears the codes!
+          setTimeout(() => {
+            setClearingDTC(false);
+            setCleared(true);
+          }, 2000);
         }}
       >
         {isClearingDTC ? (

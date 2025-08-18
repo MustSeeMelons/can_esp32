@@ -36,6 +36,11 @@ export const canMessageService: ICanMessageService = {
   },
 };
 
+/**
+ * Calculates RPM from an OBD2 RPM response.
+ * @param message
+ * @returns
+ */
 export const getRpm = (message: ICanMessage) => {
   const isCorrectBytes = message.data[0] === 0x04;
   const isPositive = message.data[1] === SID.SHOW_DATA + 0x40;

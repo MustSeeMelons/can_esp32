@@ -1,17 +1,18 @@
 import { useContext, useEffect, useRef, useState } from "preact/hooks";
-import { CAN_ID, PID, WS_MESSAGE } from "../../../../definitions";
+import { FORD_ID, WS_MESSAGE } from "../../../../definitions";
 import { SocketContext } from "../../../../socket-provider/socket-provider";
 import "../../action-modal.scss";
 import "./rpm-sniffer.scss";
 import { Button } from "../../../button/button";
 import { Loader } from "../../../loader/loader";
 import { StoreContext } from "../../../../store-provider/store-provider";
-import { getRpm } from "../../../../services/can-message-service";
 import { mapRange } from "../../../../utils/number-utils";
 
 const minDegrees = 0;
 const maxDegress = 90;
 const maxRpm = 7000;
+
+const sniffIntervalMs = 1000;
 
 export const RpmSniffer = () => {
   const { canMessageMap } = useContext(StoreContext);
@@ -27,20 +28,19 @@ export const RpmSniffer = () => {
   }, [intervalRef]);
 
   useEffect(() => {
-    const engineMessages = canMessageMap[CAN_ID.Engine];
+    const engineMessages = canMessageMap[FORD_ID.RPM];
 
     const rpmMessage = engineMessages?.find((m) => {
-      return m.consumed === false && m.data[2] === PID.ENGINE_RPM;
+      return m.consumed === false;
     });
 
     if (rpmMessage) {
       rpmMessage.consumed = true;
 
-      const rpm = getRpm(rpmMessage);
-
+      const rpm = rpmMessage.data[2] * 16;
       rpm && (rpmRef.current = rpm);
     }
-  }, [canMessageMap[CAN_ID.Engine]]);
+  }, [canMessageMap[FORD_ID.RPM]]);
 
   return (
     <div class="expandable-content rpm-sniffer">
@@ -53,7 +53,7 @@ export const RpmSniffer = () => {
             if (!isMonitoring) {
               intervalRef.current = setInterval(() => {
                 getSocket()?.send(new Uint8Array(WS_MESSAGE.REQUEST_RPM));
-              }, 500);
+              }, sniffIntervalMs);
             }
           }}
         >

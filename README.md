@@ -1,5 +1,9 @@
 # CAN ESP32
 
+![Alt text](/pic.jpg)
+
+The loose wire goes to 3rd pin from the bottom (DTR?).
+
 ## Summary
 
 New cars do chimes when turning on the engine. My '06 Focus does not. This device aims to rectify that!
@@ -10,13 +14,18 @@ Is an AP that serves a Preact App for listening in on the CAN network via a webs
 
 Avaialble through `obd2.local` with the help of mdns!
 
-## TODO
+On plugging in plays the windows XP startup sound.
 
-- [XXX] Check messages, responses to DTC, RPM.
+I don't get any OBD responses from my 2006 Focus, but I can clear DTC's!
+
+Would need to decode raw CAN frames to make sense of anything.
+
+## TODO
 - [FW/FE] Read DTC
 - [FW] Play audio on startup (800RPM) and shutdown (?) (0RPM).
-- [FE][FW] Oil Temp request/response, visualization.
 - [FW] SD Card logger.
+- [FE][FW] Oil Temp request/response, visualization.
+- [XX] Update PCB [IC<>IC level shifter, CAN caps, 32[TX], 33[RX]]
 - [FE] GZIP the Preact app
 - [FW] Spiffs for web app storage?
 
@@ -24,7 +33,8 @@ Avaialble through `obd2.local` with the help of mdns!
 
 ## Notes to future self
 
-- Implement the upload mechanism that all ESP32 baords use. Turning things on/off is annoying. But it was cheaper!
+- Implement the upload mechanism that all ESP32 baords use. Turning things on/off is annoying.
+- Serial monitoring during operation would be great!
 
 ## How to flash
 
@@ -34,7 +44,7 @@ Avaialble through `obd2.local` with the help of mdns!
 
 ### Dev Board
 
-Keep down the `boot button while powering on.
+Keep down the boot button while powering on.
 
 ## Julie OBD2 emulator
 
@@ -44,9 +54,11 @@ GREEN: CODE (UNCONNECTED/GND)
 BLACK: CAN-H
 WHITE: CAN-L
 
+Sketchy link: https://lisaiauto.ru/universalnyj-emulyator-julie-of80-manual-po-nastrojke-i-podklyucheniyu/
+
 ## SPIFFS
 
-## CAN (OBDII)
+## OBDII Response addresses 
 
 `0x7DF` is a broadcast to all devices.
 `0x7E8` should be the engine

@@ -26,4 +26,6 @@ void obd_can_send(can_message_t message);
 
 void obd_clear_dtc();
 
+void obd_request_rpm();
+
 #endif

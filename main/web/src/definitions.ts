@@ -5,6 +5,10 @@ export enum CAN_ID {
   ABS = 0x7ea,
 }
 
+export enum FORD_ID {
+  RPM = 0x200,
+}
+
 // Map OBD2 can message identifier to human readable name
 export const mapIdentifierToName = (identifier: number) => {
   switch (identifier) {

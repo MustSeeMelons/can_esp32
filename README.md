@@ -2,6 +2,11 @@
 
 ![Alt text](/pic.jpg)
 
+![Alt text](/s1.png)
+
+![Alt text](/s2.png)
+
+
 The loose wire goes to 3rd pin from the bottom (DTR?).
 
 ## Summary
